@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Forex Capital | Professional Capital Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #C9A84C;
+            --gold-light: #E8C96D;
+            --gold-dark: #A67C3A;
+            --black: #080A0F;
+            --dark: #0D0F14;
+            --dark-2: #12141A;
+            --dark-3: #1A1D25;
+            --navy: #0A1628;
+            --navy-2: #0F1E38;
+            --navy-3: #162440;
+            --white: #FFFFFF;
+            --white-70: rgba(255,255,255,0.7);
+            --white-50: rgba(255,255,255,0.5);
+            --white-20: rgba(255,255,255,0.2);
+            --white-10: rgba(255,255,255,0.1);
+            --white-05: rgba(255,255,255,0.05);
+            --gold-glow: rgba(201,168,76,0.3);
+            --green: #4CAF50;
+            --red: #F44336;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--dark); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+        /* CURSOR */
+        .cursor {
+            width: 20px; height: 20px;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transition: transform 0.2s ease, background 0.2s ease;
+            transform: translate(-50%, -50%);
+        }
+        .cursor-dot {
+            width: 5px; height: 5px;
+            background: var(--gold);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+        }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; width: 100%;
+            z-index: 1000; padding: 0 5%;
+            height: 78px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(8,10,15,0.88);
+            backdrop-filter: blur(22px);
+            border-bottom: 1px solid rgba(201,168,76,0.13);
+            transition: all 0.3s ease;
+        }
+        nav.scrolled {
+            height: 68px;
+            background: rgba(8,10,15,0.98);
+            border-bottom-color: rgba(201,168,76,0.28);
+        }
+        .nav-logo { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+        .nav-logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 0 18px var(--gold-glow);
+        }
+        .nav-logo-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px; font-weight: 700;
+            color: var(--white); letter-spacing: 0.4px; line-height: 1.1;
+        }
+        .nav-logo-sub {
+            font-size: 9px; font-weight: 600;
+            color: var(--gold); letter-spacing: 2.5px; text-transform: uppercase;
+        }
+        .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+        .nav-links a {
+            text-decoration: none; color: var(--white-70);
+            font-size: 13px; font-weight: 500; letter-spacing: 0.4px;
+            transition: color 0.3s; position: relative;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0;
+            width: 0; height: 1px; background: var(--gold); transition: width 0.3s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark)) !important;
+            color: var(--black) !important;
+            padding: 10px 22px; border-radius: 6px;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 14px var(--gold-glow);
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 22px var(--gold-glow) !important; }
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+        .hamburger span { width: 24px; height: 2px; background: var(--gold); border-radius: 2px; transition: all 0.3s; }
+        .mobile-nav {
+            display: none; position: fixed;
+            top: 78px; left: 0; right: 0;
+            background: rgba(8,10,15,0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(201,168,76,0.15);
+            padding: 16px 5%; z-index: 999;
+            flex-direction: column; gap: 4px;
+            opacity: 0; transform: translateY(-10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .mobile-nav.open { display: flex; opacity: 1; transform: translateY(0); }
+        .mobile-nav a {
+            text-decoration: none; color: var(--white-70);
+            font-size: 15px; font-weight: 500;
+            padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: color 0.3s;
+        }
+        .mobile-nav a:last-child { border-bottom: none; }
+        .mobile-nav a:hover { color: var(--gold); }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            position: relative; display: flex; align-items: center;
+            overflow: hidden; padding: 78px 5% 0;
+        }
+        .hero-bg { position: absolute; inset: 0; z-index: 0; }
+        .hero-bg-gradient {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(8,10,15,0.95) 0%, transparent 100%),
+                        linear-gradient(135deg, #080A0F 0%, #0A1628 50%, #080A0F 100%);
+        }
+        .hero-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(201,168,76,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(201,168,76,0.035) 1px, transparent 1px);
+            background-size: 58px 58px;
+            animation: gridScroll 22s linear infinite;
+        }
+        @keyframes gridScroll { 0%{transform:translateY(0)} 100%{transform:translateY(58px)} }
+        .hero-orb {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
+        }
+        .hero-orb-1 { width: 550px; height: 550px; top: -80px; right: -80px; animation: orbFloat 9s ease-in-out infinite; }
+        .hero-orb-2 { width: 380px; height: 380px; bottom: 80px; left: 8%; animation: orbFloat 13s ease-in-out infinite reverse; }
+        @keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-28px) scale(1.04)} }
+
+        .hero-wrapper {
+            position: relative; z-index: 2;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 60px; align-items: center;
+            width: 100%; max-width: 1280px; margin: 0 auto;
+            padding: 60px 0;
+        }
+
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 9px;
+            background: rgba(201,168,76,0.09);
+            border: 1px solid rgba(201,168,76,0.28);
+            padding: 7px 18px; border-radius: 50px; margin-bottom: 28px;
+            animation: fadeInDown 0.8s ease forwards;
+        }
+        .badge-dot {
+            width: 7px; height: 7px; background: var(--gold);
+            border-radius: 50%; animation: pulseDot 2s infinite;
+        }
+        @keyframes pulseDot {
+            0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.5)}
+            50%{box-shadow:0 0 0 7px rgba(201,168,76,0)}
+        }
+        .hero-badge span { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
+
+        .hero-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 4.5vw, 62px);
+            font-weight: 800; line-height: 1.1;
+            margin-bottom: 22px;
+            animation: fadeInUp 0.8s ease 0.2s forwards; opacity: 0;
+        }
+        .hero-sub {
+            font-size: 16px; color: var(--white-70);
+            line-height: 1.75; margin-bottom: 38px;
+            font-weight: 300; max-width: 520px;
+            animation: fadeInUp 0.8s ease 0.4s forwards; opacity: 0;
+        }
+        .hero-btns {
+            display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 44px;
+            animation: fadeInUp 0.8s ease 0.6s forwards; opacity: 0;
+        }
+        .hero-trust {
+            display: flex; flex-wrap: wrap; gap: 16px;
+            animation: fadeInUp 0.8s ease 0.8s forwards; opacity: 0;
+        }
+        .trust-pill {
+            display: flex; align-items: center; gap: 7px;
+            font-size: 12px; color: var(--white-70); font-weight: 500;
+        }
+        .trust-icon {
+            width: 18px; height: 18px;
+            background: rgba(201,168,76,0.14);
+            border: 1px solid rgba(201,168,76,0.35);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 9px; color: var(--gold); flex-shrink: 0;
+        }
+
+        /* DASHBOARD */
+        .hero-dashboard { position: relative; animation: fadeInRight 1s ease 0.5s forwards; opacity: 0; }
+        @keyframes fadeInRight { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+        .dash-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
+        }
+        .dash-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 18px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .dash-title { font-size: 12px; font-weight: 600; color: var(--white-70); letter-spacing: 1px; text-transform: uppercase; }
+        .dash-live { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--green); font-weight: 700; }
+        .live-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulseDot 2s infinite; }
+        .chart-wrap { height: 110px; position: relative; margin-bottom: 18px; overflow: hidden; }
+        .chart-wrap svg { width: 100%; height: 100%; }
+        .dash-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 14px; }
+        .met { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 11px; }
+        .met-lbl { font-size: 9px; color: var(--white-50); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .met-val { font-size: 17px; font-weight: 800; color: var(--white); font-family: 'Montserrat', sans-serif; }
+        .met-val.green { color: var(--green); }
+        .met-chg { font-size: 9px; color: var(--green); font-weight: 600; margin-top: 1px; }
+        .dash-trades { display: flex; flex-direction: column; gap: 7px; }
+        .trow {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 7px 11px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04); border-radius: 8px;
+        }
+        .tpair { font-size: 11px; font-weight: 700; color: var(--white); font-family: 'Montserrat', sans-serif; letter-spacing: 0.4px; }
+        .ttype { font-size: 9px; padding: 2px 7px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px; }
+        .ttype.buy { background: rgba(76,175,80,0.14); color: var(--green); }
+        .ttype.sell { background: rgba(244,67,54,0.14); color: var(--red); }
+        .tpnl { font-size: 12px; font-weight: 700; font-family: 'Montserrat', sans-serif; }
+        .tpnl.pos { color: var(--green); }
+
+        .fc1,.fc2 {
+            position: absolute; border-radius: 13px; padding: 12px 16px;
+            backdrop-filter: blur(20px);
+        }
+        .fc1 {
+            bottom: -25px; right: -18px;
+            background: rgba(201,168,76,0.09); border: 1px solid rgba(201,168,76,0.28);
+            animation: floatA 3.5s ease-in-out infinite;
+        }
+        .fc2 {
+            top: -18px; left: -22px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+            animation: floatA 4.5s ease-in-out infinite reverse;
+        }
+        @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+        .fc-val { font-family: 'Montserrat', sans-serif; font-size: 19px; font-weight: 800; color: var(--gold); }
+        .fc-lbl { font-size: 10px; color: var(--white-50); margin-top: 2px; }
+
+        /* BUTTONS */
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 9px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
+            color: var(--black); padding: 15px 32px;
+            border-radius: 8px; font-size: 14px; font-weight: 700;
+            letter-spacing: 0.4px; text-decoration: none; cursor: pointer; border: none;
+            transition: all 0.3s; box-shadow: 0 8px 28px rgba(201,168,76,0.3);
+            position: relative; overflow: hidden;
+        }
+        .btn-primary::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+            transition: left 0.5s;
+        }
+        .btn-primary:hover::before { left: 100%; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(201,168,76,0.38); }
+        .btn-secondary {
+            display: inline-flex; align-items: center; gap: 9px;
+            background: transparent; color: var(--white);
+            padding: 15px 32px; border-radius: 8px; font-size: 14px; font-weight: 600;
+            letter-spacing: 0.4px; text-decoration: none; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.18); transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        .btn-secondary:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-3px); background: rgba(201,168,76,0.05); }
+
+        /* ANIMATIONS */
+        @keyframes fadeInDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+        /* MARQUEE */
+        .marquee-wrap {
+            padding: 18px 0; overflow: hidden;
+            border-top: 1px solid rgba(201,168,76,0.09);
+            border-bottom: 1px solid rgba(201,168,76,0.09);
+            background: rgba(201,168,76,0.015);
+        }
+        .marquee-track { display: flex; gap: 55px; animation: marquee 28s linear infinite; white-space: nowrap; }
+        .marquee-item { display: flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 600; color: var(--white-50); letter-spacing: 1px; text-transform: uppercase; flex-shrink: 0; }
+        .marquee-item .g { color: var(--gold); }
+        @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+        /* STATS */
+        .stats-section { padding: 80px 5%; background: linear-gradient(180deg, var(--black) 0%, var(--dark-2) 50%, var(--black) 100%); }
+        .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 22px; max-width: 1280px; margin: 0 auto; }
+        .stat-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px; padding: 34px 26px; text-align: center;
+            position: relative; overflow: hidden; transition: all 0.4s; cursor: default;
+        }
+        .stat-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0; transition: opacity 0.4s;
+        }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-card:hover { border-color: rgba(201,168,76,0.2); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .stat-ico { width: 48px; height: 48px; background: rgba(201,168,76,0.09); border: 1px solid rgba(201,168,76,0.2); border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 21px; margin: 0 auto 18px; }
+        .stat-num { font-family: 'Montserrat', sans-serif; font-size: clamp(32px,4vw,46px); font-weight: 800; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: 9px; }
+        .stat-lbl { font-size: 12px; color: var(--white-50); font-weight: 500; letter-spacing: 0.4px; text-transform: uppercase; }
+
+        /* SECTION COMMONS */
+        .sec-pad { padding: 100px 5%; }
+        .inner { max-width: 1280px; margin: 0 auto; }
+        .sec-label { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+        .sec-line { width: 28px; height: 1px; background: var(--gold); }
+        .sec-tag { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 2.5px; text-transform: uppercase; }
+        .sec-title { font-family: 'Playfair Display', serif; font-size: clamp(30px,3.8vw,50px); font-weight: 700; line-height: 1.15; margin-bottom: 18px; }
+        .sec-sub { font-size: 15px; color: var(--white-70); max-width: 540px; line-height: 1.75; font-weight: 300; }
+        .gold-line { width: 56px; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); margin: 18px 0; }
+        .gold-text { background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        /* MARKET ANALYSIS */
+        .analysis-sec { padding: 100px 5%; background: var(--black); position: relative; overflow: hidden; }
+        .analysis-sec::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,0.05) 0%, transparent 70%); pointer-events: none; }
+        .analysis-hdr { text-align: center; margin-bottom: 56px; position: relative; z-index: 1; }
+        .analysis-hdr .sec-label { justify-content: center; }
+        .analysis-hdr .sec-sub { margin: 0 auto; }
+        .analysis-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 22px; max-width: 1280px; margin: 0 auto; position: relative; z-index: 1; }
+        .analysis-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 18px; overflow: hidden; cursor: pointer;
+            transition: all 0.4s; display: flex; flex-direction: column;
+        }
+        .analysis-card:hover { border-color: rgba(201,168,76,0.28); transform: translateY(-6px); box-shadow: 0 24px 48px rgba(0,0,0,0.4); }
+        .analysis-card-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px;
+        }
+        .analysis-badge {
+            font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+            padding: 4px 11px; border-radius: 50px; text-transform: uppercase;
+            border: 1px solid transparent;
+        }
+        .badge-pred { background: rgba(244,67,54,0.1); color: #FF6B5B; border-color: rgba(244,67,54,0.2); }
+        .badge-move { background: rgba(201,168,76,0.1); color: var(--gold); border-color: rgba(201,168,76,0.2); }
+        .badge-result { background: rgba(76,175,80,0.1); color: var(--green); border-color: rgba(76,175,80,0.2); }
+        .badge-analysis { background: rgba(99,102,241,0.1); color: #818CF8; border-color: rgba(99,102,241,0.2); }
+        .live-tag {
+            display: flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 700;
+            color: var(--green); letter-spacing: 0.5px; text-transform: uppercase;
+            background: rgba(76,175,80,0.08); border: 1px solid rgba(76,175,80,0.18);
+            padding: 3px 9px; border-radius: 50px;
+        }
+        .analysis-img-wrap { position: relative; width: 100%; aspect-ratio: 4/5; background: rgba(255,255,255,0.02); overflow: hidden; }
+        .analysis-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s; }
+        .analysis-card:hover .analysis-img { transform: scale(1.05); }
+        .analysis-img-placeholder {
+            width: 100%; height: 100%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 8px;
+            color: var(--white-50); background: rgba(255,255,255,0.02);
+        }
+        .ph-ico { font-size: 32px; }
+        .ph-txt { font-size: 12px; font-weight: 500; letter-spacing: 0.4px; }
+        .analysis-card-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 10px; padding: 16px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .analysis-meta-title { font-size: 13px; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+        .analysis-meta-sub { font-size: 11px; color: var(--white-50); font-weight: 300; line-height: 1.4; }
+        .analysis-expand-btn {
+            width: 32px; height: 32px; flex-shrink: 0;
+            background: rgba(201,168,76,0.09); border: 1px solid rgba(201,168,76,0.2);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; transition: all 0.3s;
+        }
+        .analysis-card:hover .analysis-expand-btn { background: rgba(201,168,76,0.18); transform: scale(1.08); }
+
+        /* LIGHTBOX */
+        .lightbox {
+            display: none; position: fixed; inset: 0; z-index: 10000;
+            background: rgba(4,5,8,0.92); backdrop-filter: blur(12px);
+            align-items: center; justify-content: center; padding: 40px;
+        }
+        .lightbox.show { display: flex; }
+        .lightbox-inner { position: relative; max-width: 720px; width: 100%; text-align: center; }
+        .lightbox-img { max-width: 100%; max-height: 78vh; border-radius: 14px; border: 1px solid rgba(201,168,76,0.2); box-shadow: 0 30px 70px rgba(0,0,0,0.6); }
+        .lightbox-caption { margin-top: 18px; font-size: 14px; color: var(--white-70); font-weight: 500; }
+        .lightbox-close {
+            position: absolute; top: -46px; right: 0;
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+            color: var(--white); font-size: 16px; cursor: pointer; transition: all 0.3s;
+        }
+        .lightbox-close:hover { background: rgba(201,168,76,0.18); border-color: rgba(201,168,76,0.4); transform: rotate(90deg); }
+
+        /* SERVICES */
+        .services-section { padding: 100px 5%; background: var(--dark-2); }
+        .services-hdr { text-align: center; margin-bottom: 64px; }
+        .services-hdr .sec-label { justify-content: center; }
+        .services-hdr .sec-sub { margin: 0 auto; }
+        .srv-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 26px; max-width: 1280px; margin: 0 auto; }
+        .srv-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 22px; padding: 38px 30px;
+            position: relative; overflow: hidden; transition: all 0.4s;
+            display: flex; flex-direction: column;
+        }
+        .srv-card.feat { background: linear-gradient(145deg, rgba(201,168,76,0.07) 0%, rgba(10,22,40,0.5) 100%); border-color: rgba(201,168,76,0.22); }
+        .srv-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
+            opacity: 0; transition: opacity 0.4s;
+        }
+        .srv-card.feat::before { opacity: 1; }
+        .srv-card:hover { border-color: rgba(201,168,76,0.28); transform: translateY(-8px); box-shadow: 0 28px 56px rgba(0,0,0,0.38); }
+        .srv-card:hover::before { opacity: 1; }
+        .srv-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(201,168,76,0.09); border: 1px solid rgba(201,168,76,0.2); padding: 4px 11px; border-radius: 50px; font-size: 9px; font-weight: 700; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 22px; width: fit-content; }
+        .srv-ico { width: 58px; height: 58px; background: linear-gradient(135deg, rgba(201,168,76,0.14), rgba(201,168,76,0.04)); border: 1px solid rgba(201,168,76,0.2); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 22px; }
+        .srv-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 14px; }
+        .srv-desc { font-size: 14px; color: var(--white-70); line-height: 1.72; margin-bottom: 28px; font-weight: 300; flex: 1; }
+        .srv-list { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 32px; }
+        .srv-list li { display: flex; align-items: center; gap: 11px; font-size: 13px; color: var(--white-70); }
+        .fcheck { width: 19px; height: 19px; background: rgba(201,168,76,0.11); border: 1px solid rgba(201,168,76,0.28); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 9px; color: var(--gold); }
+        .srv-link { display: inline-flex; align-items: center; gap: 7px; color: var(--gold); font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; transition: gap 0.3s; }
+        .srv-link:hover { gap: 12px; }
+
+        /* WHY US */
+        .why-section { padding: 100px 5%; background: var(--black); }
+        .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1280px; margin: 0 auto; }
+        .why-feats { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 36px; }
+        .why-feat {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 18px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06); border-radius: 13px; transition: all 0.3s;
+        }
+        .why-feat:hover { border-color: rgba(201,168,76,0.2); background: rgba(201,168,76,0.04); }
+        .wf-ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+        .wf-txt { font-size: 13px; font-weight: 600; color: var(--white); line-height: 1.4; }
+        .why-visual-card {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 22px; padding: 38px;
+            box-shadow: 0 28px 56px rgba(0,0,0,0.38);
+        }
+        .vc-title { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; margin-bottom: 22px; }
+        .perf-bars { display: flex; flex-direction: column; gap: 17px; }
+        .pb-item { display: flex; flex-direction: column; gap: 7px; }
+        .pb-top { display: flex; justify-content: space-between; font-size: 12px; color: var(--white-70); font-weight: 500; }
+        .pb-top span:last-child { color: var(--gold); font-weight: 700; }
+        .pb-track { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+        .pb-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gold-dark), var(--gold-light)); width: 0; transition: width 2s ease; }
+
+        /* RISK */
+        .risk-section { padding: 100px 5%; background: linear-gradient(135deg, var(--navy) 0%, var(--dark-2) 100%); position: relative; overflow: hidden; }
+        .risk-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 80% 50%, rgba(201,168,76,0.04) 0%, transparent 70%); pointer-events: none; }
+        .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1280px; margin: 0 auto; }
+        .risk-feats { display: flex; flex-direction: column; gap: 18px; }
+        .rf-card {
+            display: flex; gap: 18px; padding: 22px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 15px; transition: all 0.3s;
+        }
+        .rf-card:hover { border-color: rgba(201,168,76,0.22); background: rgba(201,168,76,0.04); transform: translateX(5px); }
+        .rf-ico { width: 46px; height: 46px; background: linear-gradient(135deg, rgba(201,168,76,0.14), rgba(201,168,76,0.04)); border: 1px solid rgba(201,168,76,0.2); border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+        .rf-h { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 5px; }
+        .rf-p { font-size: 13px; color: var(--white-50); line-height: 1.6; font-weight: 300; }
+        .shield-box {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.14);
+            border-radius: 22px; padding: 46px; text-align: center; position: relative; overflow: hidden;
+        }
+        .shield-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+        .sh-ico { font-size: 74px; margin-bottom: 22px; display: block; filter: drop-shadow(0 0 18px rgba(201,168,76,0.38)); }
+        .sh-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 14px; }
+        .sh-desc { font-size: 14px; color: var(--white-70); line-height: 1.7; font-weight: 300; margin-bottom: 30px; }
+        .sh-stats { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+        .sh-stat { background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.14); border-radius: 11px; padding: 15px; }
+        .sh-val { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); margin-bottom: 3px; }
+        .sh-lbl { font-size: 10px; color: var(--white-50); text-transform: uppercase; letter-spacing: 0.4px; }
+
+        /* TESTIMONIALS */
+        .testi-section { padding: 100px 5%; background: var(--dark-2); }
+        .testi-hdr { text-align: center; margin-bottom: 56px; }
+        .testi-hdr .sec-label { justify-content: center; }
+        .testi-hdr .sec-sub { margin: 0 auto; }
+
+        /* Tab Controls */
+        .testi-tabs {
+            display: flex; justify-content: center; gap: 12px;
+            margin-bottom: 44px; flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 24px; border-radius: 50px; font-size: 12px;
+            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            cursor: pointer; transition: all 0.3s; border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: var(--white-50); font-family: 'Inter', sans-serif;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--black); border-color: transparent;
+            box-shadow: 0 6px 20px rgba(201,168,76,0.3);
+        }
+        .tab-btn:hover:not(.active) { border-color: rgba(201,168,76,0.3); color: var(--gold); }
+
+        .testi-panel { display: none; }
+        .testi-panel.active { display: block; }
+
+        .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; max-width: 1280px; margin: 0 auto; }
+        .testi-grid-2col { display: grid; grid-template-columns: repeat(2,1fr); gap: 22px; max-width: 860px; margin: 0 auto; }
+
+        .tc {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px; padding: 34px;
+            position: relative; overflow: hidden; transition: all 0.4s;
+        }
+        .tc:hover { border-color: rgba(201,168,76,0.2); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .tc::before { content: '"'; position: absolute; top: 14px; right: 22px; font-family: 'Playfair Display', serif; font-size: 72px; color: rgba(201,168,76,0.07); line-height: 1; }
+        .tc-stars { display: flex; gap: 3px; margin-bottom: 18px; }
+        .star { color: var(--gold); font-size: 15px; }
+        .tc-type {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 3px 10px; border-radius: 50px; margin-bottom: 14px;
+        }
+        .tc-type.mgmt { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); }
+        .tc-type.pass { background: rgba(76,175,80,0.1); color: var(--green); border: 1px solid rgba(76,175,80,0.2); }
+        .tc-text { font-size: 14px; color: var(--white-70); line-height: 1.78; margin-bottom: 26px; font-weight: 300; font-style: italic; }
+        .tc-author { display: flex; align-items: center; gap: 13px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .tc-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--gold-dark), var(--navy-2)); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; border: 2px solid rgba(201,168,76,0.28); }
+        .tc-name { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+        .tc-detail { font-size: 11px; color: var(--gold); font-weight: 500; }
+        .tc-result { display: flex; align-items: center; gap: 7px; border-radius: 8px; padding: 8px 12px; margin-top: 14px; font-size: 12px; font-weight: 600; }
+        .tc-result.green-r { background: rgba(76,175,80,0.08); border: 1px solid rgba(76,175,80,0.15); color: var(--green); }
+        .tc-result.gold-r { background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.18); color: var(--gold); }
+
+        /* FINAL CTA */
+        .final-cta { padding: 100px 5%; text-align: center; background: var(--black); position: relative; overflow: hidden; }
+        .final-cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(201,168,76,0.055) 0%, transparent 70%); pointer-events: none; }
+        .cta-inner {
+            max-width: 780px; margin: 0 auto;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(201,168,76,0.14);
+            border-radius: 28px; padding: 66px 56px; position: relative; overflow: hidden;
+        }
+        .cta-inner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+        .cta-inner .sec-sub { margin: 0 auto 36px; text-align: center; }
+        .cta-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+        .cta-disclaimer { margin-top: 28px; font-size: 11px; color: var(--white-50); font-weight: 300; line-height: 1.6; max-width: 580px; margin-left: auto; margin-right: auto; }
+
+        /* FOOTER */
+        footer { background: var(--black); border-top: 1px solid rgba(255,255,255,0.06); }
+        .foot-main { padding: 66px 5% 46px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 46px; max-width: 1280px; margin: 0 auto; }
+        .foot-desc { font-size: 13px; color: var(--white-50); line-height: 1.78; font-weight: 300; margin: 18px 0 22px; max-width: 290px; }
+        .foot-socials { display: flex; gap: 9px; }
+        .soc-btn { width: 36px; height: 36px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: all 0.3s; text-decoration: none; }
+        .soc-btn:hover { background: rgba(201,168,76,0.09); border-color: rgba(201,168,76,0.28); transform: translateY(-3px); }
+        .foot-col-h { font-size: 12px; font-weight: 700; color: var(--white); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 22px; }
+        .foot-links { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+        .foot-links a { text-decoration: none; font-size: 13px; color: var(--white-50); transition: color 0.3s; font-weight: 300; }
+        .foot-links a:hover { color: var(--gold); }
+        .foot-bottom { padding: 22px 5%; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; flex-wrap: wrap; max-width: 1280px; margin: 0 auto; }
+        .foot-disc { font-size: 10px; color: var(--white-50); line-height: 1.72; max-width: 680px; font-weight: 300; }
+        .foot-copy { font-size: 11px; color: var(--white-50); white-space: nowrap; }
+        .foot-copy span { color: var(--gold); }
+
+        /* REVEAL */
+        .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .rd1 { transition-delay: 0.1s; } .rd2 { transition-delay: 0.2s; } .rd3 { transition-delay: 0.3s; } .rd4 { transition-delay: 0.4s; }
+
+        /* RESPONSIVE */
+        @media(max-width:1100px) {
+            .hero-wrapper { grid-template-columns: 1fr; text-align: center; gap: 50px; }
+            .hero-sub, .hero-trust { margin: 0 auto 38px; justify-content: center; }
+            .hero-btns { justify-content: center; }
+            .hero-dashboard { display: none; }
+            .stats-grid { grid-template-columns: repeat(2,1fr); }
+            .analysis-grid { grid-template-columns: repeat(2,1fr); }
+        }
+        @media(max-width:900px) {
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .srv-grid { grid-template-columns: 1fr; max-width: 520px; margin: 0 auto; }
+            .why-grid, .risk-grid { grid-template-columns: 1fr; gap: 48px; }
+            .testi-grid { grid-template-columns: 1fr; max-width: 520px; }
+            .testi-grid-2col { grid-template-columns: 1fr; max-width: 520px; }
+            .foot-main { grid-template-columns: 1fr 1fr; }
+            .cta-inner { padding: 46px 28px; }
+        }
+        @media(max-width:600px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .analysis-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+            .why-feats { grid-template-columns: 1fr; }
+            .foot-main { grid-template-columns: 1fr; }
+            .foot-bottom { flex-direction: column; gap: 10px; }
+            .hero-btns { flex-direction: column; align-items: center; }
+            .cta-btns { flex-direction: column; align-items: center; }
+            .sec-pad { padding: 70px 5%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+    <a href="#" class="nav-logo">
+        <div class="nav-logo-icon">⬡</div>
+        <div>
+            <div class="nav-logo-title">Elite Forex Capital</div>
+            <div class="nav-logo-sub">Capital Management</div>
+        </div>
+    </a>
+    <ul class="nav-links">
+        <li><a href="#analysis">Analysis</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#why">Why Us</a></li>
+        <li><a href="#risk">Risk</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#contact" class="nav-cta">Apply Now</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+    <a href="#analysis" onclick="toggleMenu()">Market Analysis</a>
+    <a href="#services" onclick="toggleMenu()">Services</a>
+    <a href="#why" onclick="toggleMenu()">Why Us</a>
+    <a href="#risk" onclick="toggleMenu()">Risk Management</a>
+    <a href="#testimonials" onclick="toggleMenu()">Reviews</a>
+    <a href="#contact" onclick="toggleMenu()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+    <div class="hero-bg">
+        <div class="hero-bg-gradient"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+    </div>
+    <div class="hero-wrapper">
+        <!-- LEFT -->
+        <div>
+            <div class="hero-badge">
+                <div class="badge-dot"></div>
+                <span>Professional Capital Management</span>
+            </div>
+            <h1 class="hero-headline">
+                Professional Traders<br>
+                Managing Capital<br>
+                <span class="gold-text">At Scale</span>
+            </h1>
+            <p class="hero-sub">
+                We help traders pass funded account challenges, manage funded accounts, and scale larger capital through disciplined risk management and professional execution.
+            </p>
+            <div class="hero-btns">
+                <a href="#contact" class="btn-primary">🚀 Apply Now</a>
+                <a href="#contact" class="btn-secondary">📞 Speak With Our Team</a>
+            </div>
+            <div class="hero-trust">
+                <div class="trust-pill"><div class="trust-icon">✓</div>Funded Account Specialists</div>
+                <div class="trust-pill"><div class="trust-icon">✓</div>MT4 & MT5 Experts</div>
+                <div class="trust-pill"><div class="trust-icon">✓</div>Risk-Managed Trading</div>
+                <div class="trust-pill"><div class="trust-icon">✓</div>Professional Capital Management</div>
+            </div>
+        </div>
+        <!-- DASHBOARD -->
+        <div class="hero-dashboard">
+            <div class="fc2">
+                <div class="fc-val">$3.8M+</div>
+                <div class="fc-lbl">Capital Managed</div>
+            </div>
+            <div class="dash-card">
+                <div class="dash-header">
+                    <span class="dash-title">Portfolio Overview</span>
+                    <div class="dash-live"><div class="live-dot"></div> Live Trading</div>
+                </div>
+                <div class="chart-wrap">
+                    <svg viewBox="0 0 400 110" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.3"/>
+                                <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,85 L35,74 L70,66 L95,70 L125,56 L155,50 L185,41 L215,46 L245,32 L275,25 L305,29 L335,17 L365,12 L395,7 L400,6 L400,110 L0,110 Z" fill="url(#cg)"/>
+                        <path d="M0,85 L35,74 L70,66 L95,70 L125,56 L155,50 L185,41 L215,46 L245,32 L275,25 L305,29 L335,17 L365,12 L395,7 L400,6" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="400" cy="6" r="5" fill="#C9A84C" opacity="0.8">
+                            <animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite"/>
+                            <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
+                </div>
+                <div class="dash-metrics">
+                    <div class="met"><div class="met-lbl">Total PnL</div><div class="met-val green">+27.4%</div><div class="met-chg">↑ This Month</div></div>
+                    <div class="met"><div class="met-lbl">Win Rate</div><div class="met-val">85.1%</div><div class="met-chg" style="color:var(--gold)">⬡ Avg</div></div>
+                    <div class="met"><div class="met-lbl">Drawdown</div><div class="met-val">2.8%</div><div class="met-chg">✓ Safe</div></div>
+                </div>
+                <div class="dash-trades">
+                    <div class="trow"><span class="tpair">EUR/USD</span><span class="ttype buy">BUY</span><span class="tpnl pos">+$924</span></div>
+                    <div class="trow"><span class="tpair">XAU/USD</span><span class="ttype buy">BUY</span><span class="tpnl pos">+$1,380</span></div>
+                    <div class="trow"><span class="tpair">GBP/JPY</span><span class="ttype sell">SELL</span><span class="tpnl pos">+$672</span></div>
+                </div>
+            </div>
+            <div class="fc1">
+                <div class="fc-val">98.9%</div>
+                <div class="fc-lbl">Client Satisfaction</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+    <div class="marquee-track">
+        <div class="marquee-item">⬡ <span class="g">MT4 & MT5</span> Certified</div>
+        <div class="marquee-item">⬡ FTMO Specialists</div>
+        <div class="marquee-item">⬡ <span class="g">Funded Account</span> Experts</div>
+        <div class="marquee-item">⬡ Prop Trading Professionals</div>
+        <div class="marquee-item">⬡ <span class="g">Institutional</span> Risk Management</div>
+        <div class="marquee-item">⬡ Capital Preservation First</div>
+        <div class="marquee-item">⬡ <span class="g">MyFundedFX</span> Partners</div>
+        <div class="marquee-item">⬡ Disciplined Trading Approach</div>
+        <div class="marquee-item">⬡ <span class="g">MT4 & MT5</span> Certified</div>
+        <div class="marquee-item">⬡ FTMO Specialists</div>
+        <div class="marquee-item">⬡ <span class="g">Funded Account</span> Experts</div>
+        <div class="marquee-item">⬡ Prop Trading Professionals</div>
+        <div class="marquee-item">⬡ <span class="g">Institutional</span> Risk Management</div>
+        <div class="marquee-item">⬡ Capital Preservation First</div>
+        <div class="marquee-item">⬡ <span class="g">MyFundedFX</span> Partners</div>
+        <div class="marquee-item">⬡ Disciplined Trading Approach</div>
+    </div>
+</div>
+
+<!-- STATS -->
+<section class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-card reveal">
+            <div class="stat-ico">📊</div>
+            <div class="stat-num" data-target="370">0</div>
+            <div class="stat-lbl">Client Accounts Managed</div>
+        </div>
+        <div class="stat-card reveal rd1">
+            <div class="stat-ico">🏆</div>
+            <div class="stat-num" data-target="195">0</div>
+            <div class="stat-lbl">Funded Accounts Passed</div>
+        </div>
+        <div class="stat-card reveal rd2">
+            <div class="stat-ico">💰</div>
+            <div class="stat-num" data-prefix="$" data-suffix="M+" data-target="3.8" data-decimal="true">$0M+</div>
+            <div class="stat-lbl">Capital Under Management</div>
+        </div>
+        <div class="stat-card reveal rd3">
+            <div class="stat-ico">⭐</div>
+            <div class="stat-num" data-target="98" data-suffix="%">0%</div>
+            <div class="stat-lbl">Client Satisfaction Rate</div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════ MARKET ANALYSIS ══════════════════════════════ -->
+<section class="sec analysis-sec" id="analysis">
+    <div class="inner">
+        <div class="analysis-hdr reveal">
+            <div class="sec-label"><div class="sec-line"></div><span class="sec-tag">Market Analysis</span><div class="sec-line"></div></div>
+            <h2 class="sec-title">Real <span class="gold-text">Trade Intelligence</span> In Action</h2>
+            <p class="sec-sub" style="margin:0 auto;">Our team produces institutional-grade market predictions, live trade calls, and post-trade analysis. See our work in real time.</p>
+        </div>
+        <div class="analysis-grid">
+
+            <!-- Card 1 – Market Prediction -->
+            <div class="analysis-card reveal" onclick="openLightbox('https://i.postimg.cc/xTFWvBMC/IMG-20260619-110309.jpg','🔥 Market Prediction — Elite Forex Capital Analysis')">
+                <div class="analysis-card-header">
+                    <div class="analysis-badge badge-pred">🔥 Market Prediction</div>
+                    <div class="live-tag"><div class="live-dot"></div>Active</div>
+                </div>
+                <div class="analysis-img-wrap">
+                    <img
+                        src="https://i.postimg.cc/xTFWvBMC/IMG-20260619-110309.jpg"
+                        alt="Market Prediction Analysis"
+                        class="analysis-img"
+                        onerror="this.parentElement.innerHTML='<div class=\'analysis-img-placeholder\'><div class=\'ph-ico\'>🔥</div><div class=\'ph-txt\'>Market Prediction Chart</div></div>'"
+                        loading="lazy"
+                    >
+                </div>
+                <div class="analysis-card-footer">
+                    <div class="analysis-meta">
+                        <div class="analysis-meta-title">Pre-Trade Market Prediction</div>
+                        <div class="analysis-meta-sub">Institutional bias identified before entry</div>
+                    </div>
+                    <div class="analysis-expand-btn">🔍</div>
+                </div>
+            </div>
+
+            <!-- Card 2 – Market Move -->
+            <div class="analysis-card reveal rd1" onclick="openLightbox('https://i.postimg.cc/zvQ0hZMc/IMG-20260619-110256.jpg','📈 Market Move — Live Trade Execution')">
+                <div class="analysis-card-header">
+                    <div class="analysis-badge badge-move">📈 Market Move</div>
+                    <div class="live-tag" style="color:var(--gold);background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.2);">⬡ Live</div>
+                </div>
+                <div class="analysis-img-wrap">
+                    <img
+                        src="https://i.postimg.cc/zvQ0hZMc/IMG-20260619-110256.jpg"
+                        alt="Market Move Live Trade"
+                        class="analysis-img"
+                        onerror="this.parentElement.innerHTML='<div class=\'analysis-img-placeholder\'><div class=\'ph-ico\'>📈</div><div class=\'ph-txt\'>Live Market Move</div></div>'"
+                        loading="lazy"
+                    >
+                </div>
+                <div class="analysis-card-footer">
+                    <div class="analysis-meta">
+                        <div class="analysis-meta-title">Live Trade Execution</div>
+                        <div class="analysis-meta-sub">Price moved exactly as predicted</div>
+                    </div>
+                    <div class="analysis-expand-btn">🔍</div>
+                </div>
+            </div>
+
+            <!-- Card 3 – Results -->
+            <div class="analysis-card reveal rd2" onclick="openLightbox('https://i.postimg.cc/Vv2W690Q/IMG-20260619-110418.jpg','💥 Trade Results — Confirmed Profit')">
+                <div class="analysis-card-header">
+                    <div class="analysis-badge badge-result">💥 Results</div>
+                    <div class="live-tag" style="color:var(--green);">✅ Confirmed</div>
+                </div>
+                <div class="analysis-img-wrap">
+                    <img
+                        src="https://i.postimg.cc/Vv2W690Q/IMG-20260619-110418.jpg"
+                        alt="Trade Results"
+                        class="analysis-img"
+                        onerror="this.parentElement.innerHTML='<div class=\'analysis-img-placeholder\'><div class=\'ph-ico\'>💥</div><div class=\'ph-txt\'>Trade Results</div></div>'"
+                        loading="lazy"
+                    >
+                </div>
+                <div class="analysis-card-footer">
+                    <div class="analysis-meta">
+                        <div class="analysis-meta-title">Confirmed Trade Results</div>
+                        <div class="analysis-meta-sub">Profit secured with risk managed</div>
+                    </div>
+                    <div class="analysis-expand-btn">🔍</div>
+                </div>
+            </div>
+
+            <!-- Card 4 – Analysis -->
+            <div class="analysis-card reveal rd3" onclick="openLightbox('https://i.postimg.cc/9M6BXt7f/IMG-20260619-111016.jpg','⚡ Deep Market Analysis — Technical Breakdown')">
+                <div class="analysis-card-header">
+                    <div class="analysis-badge badge-analysis">⚡ Analysis</div>
+                    <div class="live-tag" style="color:#818CF8;background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.2);">📊 Deep Dive</div>
+                </div>
+                <div class="analysis-img-wrap">
+                    <img
+                        src="https://i.postimg.cc/9M6BXt7f/IMG-20260619-111016.jpg"
+                        alt="Deep Market Analysis"
+                        class="analysis-img"
+                        onerror="this.parentElement.innerHTML='<div class=\'analysis-img-placeholder\'><div class=\'ph-ico\'>⚡</div><div class=\'ph-txt\'>Technical Analysis</div></div>'"
+                        loading="lazy"
+                    >
+                </div>
+                <div class="analysis-card-footer">
+                    <div class="analysis-meta">
+                        <div class="analysis-meta-title">Deep Technical Analysis</div>
+                        <div class="analysis-meta-sub">Structure, liquidity & confluence zones</div>
+                    </div>
+                    <div class="analysis-expand-btn">🔍</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom info strip -->
+        <div style="max-width:1280px;margin:clamp(24px,4vw,40px) auto 0;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.14);border-radius:18px;padding:clamp(16px,2.5vw,22px) clamp(20px,3vw,30px);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;" class="reveal">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:40px;height:40px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📊</div>
+                <div>
+                    <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:2px;">Real Trades. Real Analysis. Real Results.</div>
+                    <div style="font-size:12px;color:var(--white-50);font-weight:300;">All images shown are from our actual trading sessions. Click any image to expand.</div>
+                </div>
+            </div>
+            <a href="#contact" class="btn-primary" style="font-size:13px;padding:11px 22px;">See More Results →</a>
+        </div>
+    </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-inner">
+        <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+        <img src="" alt="" class="lightbox-img" id="lightboxImg">
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+    <div class="services-hdr reveal">
+        <div class="sec-label"><div class="sec-line"></div><span class="sec-tag">Our Services</span><div class="sec-line"></div></div>
+        <h2 class="sec-title">Comprehensive <span class="gold-text">Capital Solutions</span></h2>
+        <p class="sec-sub">From challenge passing to funded account scaling — end-to-end professional trading services for serious investors and traders.</p>
+    </div>
+    <div class="srv-grid">
+        <!-- Card 1 -->
+          <div class="srv-card reveal rd1">
+            <div class="srv-badge">✦ ULTRA HIGH DEMAND</div>
+            <div class="srv-ico">📈</div>
+            <h3 class="srv-title"> Account Management</h3>
+            <p class="srv-desc">Our traders execute and manage positions using structured risk management and transparent reporting — so you earn while professionals handle the trading.</p>
+            <ul class="srv-list">
+                <li><div class="fcheck">✓</div>Professional Trade Execution</li>
+                <li><div class="fcheck">✓</div>Transparent Performance Reports</li>
+                <li><div class="fcheck">✓</div>Performance-Based Profit Sharing</li>
+                <li><div class="fcheck">✓</div>Weekly Account Updates</li>
+                <li><div class="fcheck">✓</div>Risk-Controlled Growth</li>
+            </ul>
+            <a href="#contact" class="srv-link">Enroll Now →</a>
+        </div>
+    </div>
+        <!-- Card 2 FEATURED -->
+        <div class="srv-card feat reveal rd1">
+            <div class="srv-badge">✦ Most Popular</div>
+            <div class="srv-ico">🚀</div>
+            <h3 class="srv-title">Funded Account Scaling</h3>
+            <p class="srv-desc">Once funded, our team focuses on disciplined growth and long-term account scaling. We manage $100,000+ funded accounts with strict risk controls and capital preservation focus.</p>
+            <ul class="srv-list">
+                <li><div class="fcheck">✓</div>$100,000+ Funded Accounts</li>
+                <li><div class="fcheck">✓</div>Long-Term Growth Strategy</li>
+                <li><div class="fcheck">✓</div>Capital Preservation Focus</li>
+                <li><div class="fcheck">✓</div>Drawdown Protection</li>
+                <li><div class="fcheck">✓</div>Structured Withdrawal Planning</li>
+            </ul>
+            <a href="#contact" class="srv-link">Get Started →</a>
+        </div>
+        <!-- Card 3 -->
+      <div class="srv-card revea1">
+            <div class="srv-badge">✦ High Demand</div>
+            <div class="srv-ico">🎯</div>
+            <h3 class="srv-title">Funded Challenge Passing</h3>
+            <p class="srv-desc">Our experienced traders help clients navigate evaluation phases while respecting all drawdown and risk requirements — from $50,000 challenges and beyond.</p>
+            <ul class="srv-list">
+                <li><div class="fcheck">✓</div>Starting from $50K Challenges</li>
+                <li><div class="fcheck">✓</div>Evaluation & Verification Phases</li>
+                <li><div class="fcheck">✓</div>Strict Drawdown Compliance</li>
+                <li><div class="fcheck">✓</div>Rule-Adherent Execution</li>
+                <li><div class="fcheck">✓</div>Fast Phase Completion</li>
+            </ul>
+            <a href="#contact" class="srv-link">Apply Now →</a>
+        </div>
+</section>
+
+<!-- WHY US -->
+<section class="why-section" id="why">
+    <div class="why-grid">
+        <div>
+            <div class="sec-label reveal"><div class="sec-line"></div><span class="sec-tag">Why Choose Us</span></div>
+            <h2 class="sec-title reveal">The <span class="gold-text">Elite Difference</span><br>In Every Trade</h2>
+            <div class="gold-line reveal"></div>
+            <p class="sec-sub reveal">We combine institutional discipline with personalized client service. Every decision is data-driven, risk-first, and performance-focused.</p>
+            <div class="why-feats">
+                <div class="why-feat reveal"><div class="wf-ico">🏛️</div><div class="wf-txt">Professional Trading Team</div></div>
+                <div class="why-feat reveal rd1"><div class="wf-ico">📉</div><div class="wf-txt">Strict Drawdown Management</div></div>
+                <div class="why-feat reveal rd2"><div class="wf-ico">🛡️</div><div class="wf-txt">Capital Preservation First</div></div>
+                <div class="why-feat reveal rd3"><div class="wf-ico">💬</div><div class="wf-txt">Transparent Communication</div></div>
+                <div class="why-feat reveal"><div class="wf-ico">💻</div><div class="wf-txt">Multi-Platform Experience</div></div>
+                <div class="why-feat reveal rd1"><div class="wf-ico">📈</div><div class="wf-txt">Long-Term Growth Focus</div></div>
+                <div class="why-feat reveal rd2"><div class="wf-ico">🏆</div><div class="wf-txt">Funded Account Expertise</div></div>
+                <div class="why-feat reveal rd3"><div class="wf-ico">🎯</div><div class="wf-txt">Performance Driven</div></div>
+            </div>
+        </div>
+        <div class="why-visual-card reveal">
+            <h3 class="vc-title">Performance Metrics</h3>
+            <div class="perf-bars">
+                <div class="pb-item"><div class="pb-top"><span>Win Rate</span><span>85.1%</span></div><div class="pb-track"><div class="pb-fill" style="--tw:85.1%"></div></div></div>
+                <div class="pb-item"><div class="pb-top"><span>Challenge Success Rate</span><span>92.4%</span></div><div class="pb-track"><div class="pb-fill" style="--tw:92.4%"></div></div></div>
+                <div class="pb-item"><div class="pb-top"><span>Risk-Reward Consistency</span><span>86.3%</span></div><div class="pb-track"><div class="pb-fill" style="--tw:86.3%"></div></div></div>
+                <div class="pb-item"><div class="pb-top"><span>Drawdown Control</span><span>97.2%</span></div><div class="pb-track"><div class="pb-fill" style="--tw:97.2%"></div></div></div>
+                <div class="pb-item"><div class="pb-top"><span>Client Satisfaction</span><span>98.9%</span></div><div class="pb-track"><div class="pb-fill" style="--tw:98.9%"></div></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- RISK -->
+<section class="risk-section" id="risk">
+    <div class="risk-grid">
+        <div>
+            <div class="sec-label reveal"><div class="sec-line"></div><span class="sec-tag">Risk Management</span></div>
+            <h2 class="sec-title reveal">Every Trade Starts<br>With <span class="gold-text">Risk Control</span></h2>
+            <div class="gold-line reveal"></div>
+            <p class="sec-sub reveal" style="margin-bottom:36px">Our first objective is preserving capital. Every trade is executed using strict risk parameters, position sizing, and disciplined market analysis.</p>
+            <div class="risk-feats">
+                <div class="rf-card reveal">
+                    <div class="rf-ico">📅</div>
+                    <div><div class="rf-h">Daily Risk Limits</div><div class="rf-p">Strict per-session loss caps that halt trading activity to protect your balance.</div></div>
+                </div>
+                <div class="rf-card reveal rd1">
+                    <div class="rf-ico">📉</div>
+                    <div><div class="rf-h">Maximum Drawdown Controls</div><div class="rf-p">Pre-defined thresholds that pause trading before drawdown becomes critical.</div></div>
+                </div>
+                <div class="rf-card reveal rd2">
+                    <div class="rf-ico">🛑</div>
+                    <div><div class="rf-h">Stop Loss Protection</div><div class="rf-p">Every trade has a defined stop loss. No exceptions, no unprotected positions.</div></div>
+                </div>
+                <div class="rf-card reveal rd3">
+                    <div class="rf-ico">⚖️</div>
+                    <div><div class="rf-h">Structured Position Sizing</div><div class="rf-p">Lot sizes calculated precisely per trade to maintain consistent risk exposure.</div></div>
+                </div>
+                <div class="rf-card reveal">
+                    <div class="rf-ico">🔄</div>
+                    <div><div class="rf-h">Consistent Trading Framework</div><div class="rf-p">A repeatable, rules-based system applied identically across all accounts managed.</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="reveal">
+            <div class="shield-box">
+                <span class="sh-ico">🛡️</span>
+                <h3 class="sh-title">Institutional Risk Framework</h3>
+                <p class="sh-desc">Our multi-layer risk system monitors positions, drawdowns, and market conditions in real-time to keep your capital protected at all times.</p>
+                <div class="sh-stats">
+                    <div class="sh-stat"><div class="sh-val">&lt;5%</div><div class="sh-lbl">Max Daily Risk</div></div>
+                    <div class="sh-stat"><div class="sh-val">&lt;10%</div><div class="sh-lbl">Max Drawdown</div></div>
+                    <div class="sh-stat"><div class="sh-val">1:2+</div><div class="sh-lbl">Min Risk:Reward</div></div>
+                    <div class="sh-stat"><div class="sh-val">100%</div><div class="sh-lbl">SL Compliance</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-section" id="testimonials">
+    <div class="testi-hdr reveal">
+        <div class="sec-label"><div class="sec-line"></div><span class="sec-tag">Client Reviews</span><div class="sec-line"></div></div>
+        <h2 class="sec-title">Trusted By <span class="gold-text">Real Traders</span> Worldwide</h2>
+        <p class="sec-sub">Genuine results from clients who trusted Elite Forex Capital with their accounts and funded challenges.</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="testi-tabs reveal">
+        <button class="tab-btn active" onclick="switchTab('all')">All Reviews</button>
+        <button class="tab-btn" onclick="switchTab('mgmt')">Account Management</button>
+        <button class="tab-btn" onclick="switchTab('pass')">Challenge Passing</button>
+    </div>
+
+    
+
+    <!-- MANAGEMENT PANEL -->
+    <div class="testi-panel" id="panel-mgmt">
+        <div class="testi-grid" style="max-width:1280px;margin:0 auto;">
+            <div class="tc reveal">
+                <div class="tc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+                <div class="tc-type mgmt">💼 Account Management</div>
+                <p class="tc-text">"I handed over my $30K live account 8 months ago and the results have been exceptional. Weekly reports, full transparency, and disciplined risk management. My account has grown 34% while drawdown stayed under 4%."</p>
+                <div class="tc-author">
+                    <div class="tc-avatar">👨‍💼</div>
+                    <div><div class="tc-name">James Whitfield</div><div class="tc-detail">Account Management Client — United Kingdom</div></div>
+                </div>
+                <div class="tc-result green-r">📊 +34% Growth | &lt;4% Max Drawdown</div>
+            </div>
+            <div class="tc reveal rd1">
+                <div class="tc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+                <div class="tc-type mgmt">💼 Account Management</div>
+                <p class="tc-text">"Elite Forex Capital has been managing my $50K account for 6 months. I've made two successful profit withdrawals. Their reporting is crystal clear and communication is fast. Best financial decision I've made this year."</p>
+                <div class="tc-author">
+                    <div class="tc-avatar">👩‍💼</div>
+                    <div><div class="tc-name">Amira Hassan</div><div class="tc-detail">Account Management Client — UAE</div></div>
+                </div>
+                <div class="tc-result gold-r">💰 2x Profit Withdrawals Completed</div>
+            </div>
+            <div class="tc reveal rd2">
+                <div class="tc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+                <div class="tc-type mgmt">💼 Account Management</div>
+                <p class="tc-text">"I was skeptical at first, but the team proved themselves quickly. They manage my account with real discipline — no gambling, no reckless positions. I get detailed weekly updates and consistent growth month after month."</p>
+                <div class="tc-author">
+                    <div class="tc-avatar">👨‍💻</div>
+                    <div><div class="tc-name">David Osei</div><div class="tc-detail">Account Management Client — Ghana</div></div>
+                </div>
+                <div class="tc-result green-r">📈 +22% in 4 Months | Consistent Growth</div>
+            </div>
+            <div class="tc reveal">
+                <div class="tc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+                <div class="tc-type mgmt">💼 Account Management</div>
+                <p class="tc-text">"Running a business means I have no time to trade. Elite Forex Capital manages my $25,000 account and has delivered solid returns. The profit-sharing model is completely fair and the transparency is unmatched."</p>
+                <div class="tc-author">
+                    <div class="tc-avatar">🧑‍💼</div>
+                    <div><div class="tc-name">Fatima Al-Rashidi</div><div class="tc-detail"> Account Management Client — Saudi Arabia</div></div>
+                </div>
+                <div class="tc-result gold-r">💼 Profit Share Model — Fully Transparent</div>
+            </div>
+            <div class="tc reveal rd1">
+                <div class="tc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+                <div class="tc-type mgmt">💼 Account Management</div>
+                <p class="tc-text">"The level of professionalism here is genuinely hedge-fund level. 10 months with Elite Forex Capital, scaled from $20K to over $30K with consistent monthly withdrawals. They never overexpose the account."</p>
+                <div class="tc-author">
+                    <div class="tc-avatar">🧔‍♂️</div>
+                    <div><div class="tc-name">Marcus Jensen</div><div class="tc-detail">Long-Term Account Client — Denmark</div></div>
+                </div>
+                <div class="tc-result green-r">📊 $20K → $30K+ | 10 Months</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PASSING PANEL -->
+    <div class="testi-panel" id="panel-pass">
+        <div class="testi-grid-2col">
+            <div class="tc reveal">
+                <div class="tc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+                <div class="tc-type pass">🏆 Challenge Passing</div>
+                <p class="tc-text">"I had a $50,000 FTMO evaluation I couldn't pass on my own. Elite Forex Capital handled both Phase 1 and Phase 2 cleanly within 3 weeks — zero drawdown violations, perfect rule compliance. I am now fully funded. 10/10 service."</p>
+                <div class="tc-author">
+                    <div class="tc-avatar">👨‍🏦</div>
+                    <div><div class="tc-name">Carlos Mendoza</div><div class="tc-detail">FTMO Challenge Client — Spain</div></div>
+                </div>
+                <div class="tc-result green-r">🏆 $50K FTMO Funded — 3 Weeks</div>
+            </div>
+            <div class="tc reveal rd1">
+                <div class="tc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+                <div class="tc-type pass">🏆 Challenge Passing</div>
+                <p class="tc-text">"Failed the challenge twice on my own before finding this team. They passed my $100,000 MyFundedFX challenge in under 4 weeks with every rule respected. I am now scaling with their team managing the funded account too."</p>
+                <div class="tc-author">
+                    <div class="tc-avatar">👩‍🎓</div>
+                    <div><div class="tc-name">Sophie Laurent</div><div class="tc-detail">MyFundedFX Challenge Client — France</div></div>
+                </div>
+                <div class="tc-result green-r">🎯 $100K Funded — Now Scaling</div>
+            </div>
+            <div class="tc reveal" style="grid-column:1/-1;max-width:520px;margin:0 auto;">
+                <div class="tc-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+                <div class="tc-type pass">🏆 Challenge Passing</div>
+                <p class="tc-text">"Reached out after failing my $200K prop firm evaluation multiple times. This team passed the challenge cleanly, communicated throughout the entire process, and even helped me understand my account rules better. Genuinely impressed."</p>
+                <div class="tc-author">
+                    <div class="tc-avatar">👨‍🔬</div>
+                    <div><div class="tc-name">Tariq Nasser</div><div class="tc-detail">Prop Firm Challenge Client — Kuwait</div></div>
+                </div>
+                <div class="tc-result green-r">✅ $200K Challenge Passed Successfully</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+    <div class="cta-inner reveal">
+        <div class="sec-label" style="justify-content:center;margin-bottom:18px;"><div class="sec-line"></div><span class="sec-tag">Get Started Today</span><div class="sec-line"></div></div>
+        <h2 class="sec-title">Ready To <span class="gold-text">Scale Your</span><br>Trading Journey?</h2>
+        <p class="sec-sub">Whether you need challenge passing, account management, or funded account scaling, our team is ready to assist you every step of the way.</p>
+        <div class="cta-btns">
+            <a href="#contact" class="btn-primary">🚀 Start Today</a>
+            <a href="#contact" class="btn-secondary">💬 Contact Us</a>
+        </div>
+        <p class="cta-disclaimer">⚠️ Trading involves risk. Past performance does not guarantee future results.</p>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec-pad" id="contact" style="background:var(--dark-2);">
+    <div class="inner">
+        <div style="max-width:640px;margin:0 auto;text-align:center;">
+            <div class="sec-label reveal" style="justify-content:center;"><div class="sec-line"></div><span class="sec-tag">Contact Us</span><div class="sec-line"></div></div>
+            <h2 class="sec-title reveal">Start Your <span class="gold-text">Application</span></h2>
+            <div class="gold-line reveal" style="margin:18px auto;"></div>
+            <p class="sec-sub reveal" style="margin:0 auto 36px;">Reach out directly and our team will respond within 24 hours to discuss your account and the best service for your goals.</p>
+            <div style="display:flex;flex-direction:column;gap:16px;text-align:left;">
+                <div class="rf-card reveal" style="cursor:default;">
+                    <div class="rf-ico">💬</div>
+                    <div><div class="rf-h">WhatsApp Support</div><div class="rf-p">Available 7 days a week</div></div>
+                </div>
+                <div class="rf-card reveal rd1" style="cursor:default;">
+                    <div class="rf-ico">📧</div>
+                    <div><div class="rf-h">Email</div><div class="rf-p">info@eliteforex.capital</div></div>
+                </div>
+                <div class="rf-card reveal rd2" style="cursor:default;">
+                    <div class="rf-ico">⏱️</div>
+                    <div><div class="rf-h">Response Time</div><div class="rf-p">Within 24 hours guaranteed</div></div>
+                </div>
+                <div class="rf-card reveal rd3" style="cursor:default;">
+                    <div class="rf-ico">🔒</div>
+                    <div><div class="rf-h">Privacy</div><div class="rf-p">100% confidential & secure</div></div>
+                </div>
+                
+                
+                <div class="reveal" style="margin-top:36px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+    <a href="https://wa.me/923001234567" target="_blank" rel="noopener"
+       style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#2FBA5C,#1F9950);color:#fff;padding:15px 30px;border-radius:8px;font-size:14px;font-weight:700;letter-spacing:0.4px;text-decoration:none;box-shadow:0 8px 24px rgba(47,186,92,0.28);transition:all 0.3s;"
+       onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 32px rgba(47,186,92,0.38)'"
+       onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 24px rgba(47,186,92,0.28)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 3.6c-4.85 0-8.8 3.95-8.8 8.8 0 1.55.4 3.05 1.18 4.37L3.6 21l4.37-1.15a8.8 8.8 0 0 0 4.08 1.03h.01c4.86 0 8.8-3.95 8.8-8.8 0-2.35-.92-4.56-2.6-6.21zM12.06 19.4h-.01a7.3 7.3 0 0 1-3.73-1.02l-.27-.16-2.59.68.69-2.52-.18-.26a7.3 7.3 0 0 1-1.12-3.92c0-4.04 3.3-7.34 7.35-7.34a7.3 7.3 0 0 1 5.2 2.16 7.3 7.3 0 0 1 2.15 5.2c0 4.05-3.3 7.18-7.49 7.18zm4.03-5.5c-.22-.11-1.3-.64-1.5-.71-.2-.08-.35-.11-.5.11-.14.22-.57.71-.7.86-.13.14-.26.16-.48.05-1.3-.65-2.15-1.16-3.01-2.64-.23-.4.23-.37.65-1.23.07-.15.04-.27-.03-.39-.07-.11-.62-1.5-.85-2.05-.22-.54-.45-.47-.62-.48-.16-.01-.35-.01-.54-.01-.18 0-.48.07-.74.34-.25.27-.97.95-.97 2.31 0 1.36.99 2.68 1.13 2.87.14.18 1.93 2.94 4.68 4.01 2.32.91 2.32.6 2.74.56.43-.04 1.39-.57 1.59-1.12.19-.55.19-1.02.13-1.12-.06-.1-.21-.16-.42-.27z"/></svg>
+        WhatsApp Us
+    </a>
+    <a href="https://t.me/yourusername" target="_blank" rel="noopener"
+       style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#3BA5E8,#2287C9);color:#fff;padding:15px 30px;border-radius:8px;font-size:14px;font-weight:700;letter-spacing:0.4px;text-decoration:none;box-shadow:0 8px 24px rgba(59,165,232,0.28);transition:all 0.3s;"
+       onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 32px rgba(59,165,232,0.38)'"
+       onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 24px rgba(59,165,232,0.28)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.05 3.06c-.3-.25-.74-.3-1.24-.13L2.2 9.86c-.5.18-.84.5-.84.92 0 .31.2.62.65.78l4.6 1.5 1.78 5.7c.13.42.42.6.74.6.27 0 .47-.13.62-.27l2.45-2.3 4.77 3.5c.27.2.55.3.8.3.5 0 .9-.34 1.05-.96L22.5 4.1c.13-.55-.05-.93-.45-1.04zm-3.5 2.8L8.83 13.1l-.34 3.36-1.5-4.8 14.06-7.13c.13.07.25.16.36.27-.13.13-3.86 2.06-3.86 2.06z"/></svg>
+        Telegram Us
+    </a>
+</div>
+    
+</div>
+        
+            </div>
+        </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="foot-main">
+        <div>
+            <a href="#" class="nav-logo" style="margin-bottom:0;">
+                <div class="nav-logo-icon">⬡</div>
+                <div><div class="nav-logo-title">Elite Forex Capital</div><div class="nav-logo-sub">Capital Management</div></div>
+            </a>
+            <p class="foot-desc">Professional capital management through disciplined trading, institutional risk strategies, and complete transparency. Your financial growth is our mission.</p>
+            <div class="foot-socials">
+                <a class="soc-btn" title="Telegram">✈️</a>
+                <a class="soc-btn" title="WhatsApp">💬</a>
+                <a class="soc-btn" title="Instagram">📸</a>
+                <a class="soc-btn" title="Twitter/X">🐦</a>
+            </div>
+        </div>
+        <div>
+            <h4 class="foot-col-h">Services</h4>
+            <ul class="foot-links">
+                <li><a href="#services">Challenge Passing</a></li>
+                <li><a href="#services">Account Scaling</a></li>
+                <li><a href="#services">Account Management</a></li>
+                <li><a href="#contact">Apply Now</a></li>
+                <li><a href="#contact">Consultation</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="foot-col-h">Company</h4>
+            <ul class="foot-links">
+                <li><a href="#why">About Us</a></li>
+                <li><a href="#risk">Risk Management</a></li>
+                <li><a href="#testimonials">Client Reviews</a></li>
+                <li><a href="#contact">Contact</a></li>
+          
+            
+          </ul>
+        </div>
+    </div>
+    <div class="foot-bottom">
+        <p class="foot-disc">⚠️ <strong>Risk Disclaimer:</strong> Trading Forex, CFDs and funded accounts involves substantial risk of loss. Past performance does not guarantee future results.  Elite Forex Capital is not a licensed financial advisor.</p>
+        <p class="foot-copy">© 2025 <span>Elite Forex Capital</span>. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script>
+// CURSOR
+const cursor = document.getElementById('cursor');
+const dot = document.getElementById('cursorDot');
+document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    dot.style.left = e.clientX + 'px';
+    dot.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('a,button,.srv-card,.stat-card,.tc,.why-feat,.analysis-card').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1.8)'; cursor.style.background = 'rgba(201,168,76,0.1)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; cursor.style.background = 'transparent'; });
+});
+
+// NAV SCROLL
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); });
+
+// MOBILE MENU
+function toggleMenu() {
+    const nav = document.getElementById('mobileNav');
+    nav.classList.toggle('open');
+}
+
+// SCROLL REVEAL
+const revObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -45px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revObserver.observe(el));
+
+// COUNTER
+function animCount(el, target, isFloat, prefix, suffix) {
+    const dur = 2000, start = performance.now();
+    (function tick(now) {
+        const p = Math.min((now - start) / dur, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        const val = isFloat ? (ease * target).toFixed(1) : Math.floor(ease * target);
+        el.textContent = (prefix||'') + val + (suffix||'');
+        if (p < 1) requestAnimationFrame(tick);
+    })(start);
+}
+const cntObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            const el = e.target;
+            animCount(el, parseFloat(el.dataset.target), el.dataset.decimal === 'true', el.dataset.prefix||'', el.dataset.suffix||'');
+            cntObs.unobserve(el);
+        }
+    });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-num[data-target]').forEach(el => cntObs.observe(el));
+
+// PERF BARS
+const barObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.querySelectorAll('.pb-fill').forEach(b => { b.style.width = b.style.getPropertyValue('--tw') || b.style.cssText.match(/--tw:([\d.]+%)/)?.[1] || '0%'; });
+            barObs.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.3 });
+document.querySelectorAll('.perf-bars').forEach(el => barObs.observe(el));
+
+// Fix bar widths via CSS custom properties
+document.querySelectorAll('.pb-fill').forEach(b => {
+    const tw = getComputedStyle(b).getPropertyValue('--tw').trim();
+    if (tw) {
+        const barObs2 = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { b.style.width = tw; barObs2.unobserve(b); }
+            });
+        }, { threshold: 0.3 });
+        barObs2.observe(b);
+    }
+});
+
+// TABS
+function switchTab(tab) {
+    document.querySelectorAll('.testi-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    event.target.classList.add('active');
+    // re-trigger reveals
+    document.querySelectorAll('#panel-' + tab + ' .reveal').forEach(el => {
+        el.classList.remove('visible');
+        setTimeout(() => el.classList.add('visible'), 50);
+    });
+}
+
+// LIGHTBOX
+function openLightbox(src, caption) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxCaption').textContent = caption || '';
+    document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox(e) {
+    if (e && e.target !== e.currentTarget && e.target.id !== 'lightbox') return;
+    document.getElementById('lightbox').classList.remove('show');
+}
+
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+        const t = document.querySelector(this.getAttribute('href'));
+        if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+});
+
+// PARALLAX
+window.addEventListener('scroll', () => {
+    const s = window.scrollY;
+    const o1 = document.querySelector('.hero-orb-1');
+    const o2 = document.querySelector('.hero-orb-2');
+    if (o1) o1.style.transform = `translateY(${s * 0.13}px)`;
+    if (o2) o2.style.transform = `translateY(${s * -0.09}px)`;
+});
+</script>
+</body>
+</html>
