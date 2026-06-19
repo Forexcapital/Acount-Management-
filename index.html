@@ -1430,5 +1430,751 @@ window.addEventListener('scroll', () => {
     if (o2) o2.style.transform = `translateY(${s * -0.09}px)`;
 });
 </script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Forex Capital – Support Chat</title>
+    <style>
+        /* ============================================================
+           ROOT TOKENS — match main site palette
+        ============================================================ */
+        :root {
+            --gold:        #C9A84C;
+            --gold-light:  #E8C96D;
+            --gold-dark:   #A67C3A;
+            --gold-glow:   rgba(201,168,76,.28);
+            --black:       #080A0F;
+            --dark:        #0D0F14;
+            --dark-2:      #12141A;
+            --dark-3:      #1A1D25;
+            --navy:        #0A1628;
+            --white:       #FFFFFF;
+            --w70:         rgba(255,255,255,.70);
+            --w50:         rgba(255,255,255,.50);
+            --w15:         rgba(255,255,255,.15);
+            --w08:         rgba(255,255,255,.08);
+            --w04:         rgba(255,255,255,.04);
+            --green:       #4CAF50;
+            --radius:      16px;
+            --radius-sm:   10px;
+            --shadow:      0 24px 60px rgba(0,0,0,.70);
+            --transition:  .25s ease;
+        }
+
+        /* ============================================================
+           RESET
+        ============================================================ */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+
+        /* ============================================================
+           FAB – floating action button
+        ============================================================ */
+        .efc-fab {
+            position: fixed;
+            bottom: clamp(20px,4vw,32px);
+            right:  clamp(16px,4vw,32px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            pointer-events: none; /* children handle events */
+        }
+
+        /* Pulse ring */
+        .efc-fab-btn {
+            pointer-events: all;
+            position: relative;
+            width:  clamp(54px,8vw,62px);
+            height: clamp(54px,8vw,62px);
+            background: linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dark));
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 28px var(--gold-glow), 0 2px 8px rgba(0,0,0,.4);
+            transition: transform var(--transition), box-shadow var(--transition);
+            outline: none;
+        }
+        .efc-fab-btn:hover  { transform: scale(1.08); box-shadow: 0 14px 40px rgba(201,168,76,.45); }
+        .efc-fab-btn:active { transform: scale(.96); }
+        .efc-fab-btn svg    { width:26px; height:26px; fill:var(--black); transition: transform var(--transition); }
+        .efc-fab-btn.open svg { transform: rotate(45deg); }
+
+        /* Ripple */
+        .efc-fab-btn::before {
+            content: '';
+            position: absolute; inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(201,168,76,.40);
+            animation: fabRipple 2.2s ease-in-out infinite;
+        }
+        @keyframes fabRipple {
+            0%   { transform:scale(1);   opacity:.7; }
+            70%  { transform:scale(1.38);opacity:0;  }
+            100% { transform:scale(1.38);opacity:0;  }
+        }
+
+        /* Tooltip */
+        .efc-fab-tooltip {
+            pointer-events: none;
+            position: absolute;
+            right: calc(100% + 12px);
+            bottom: 50%; transform: translateY(50%);
+            background: var(--dark-2);
+            border: 1px solid rgba(201,168,76,.22);
+            color: var(--white);
+            font-size: 12px; font-weight: 600;
+            padding: 6px 12px; border-radius: 8px;
+            white-space: nowrap;
+            opacity: 0; transition: opacity var(--transition);
+            box-shadow: 0 4px 14px rgba(0,0,0,.4);
+        }
+        .efc-fab-btn:hover .efc-fab-tooltip { opacity:1; }
+
+        /* Unread badge */
+        .efc-badge {
+            position: absolute;
+            top: -3px; right: -3px;
+            width: 18px; height: 18px;
+            background: var(--green);
+            border: 2px solid var(--black);
+            border-radius: 50%;
+            font-size: 9px; font-weight: 800;
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            animation: badgePop .4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes badgePop { 0%{transform:scale(0)} 80%{transform:scale(1.2)} 100%{transform:scale(1)} }
+
+        /* ============================================================
+           CHAT WINDOW
+        ============================================================ */
+        .efc-chat {
+            pointer-events: all;
+            position: fixed;
+            bottom: clamp(90px,14vw,110px);
+            right:  clamp(16px,4vw,32px);
+            z-index: 9998;
+            width:  clamp(300px,90vw,390px);
+            max-height: clamp(480px,80vh,620px);
+            display: flex; flex-direction: column;
+            background: var(--dark-2);
+            border: 1px solid rgba(201,168,76,.18);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow), 0 0 0 1px rgba(0,0,0,.5);
+            transform: scale(.88) translateY(24px);
+            transform-origin: bottom right;
+            opacity: 0;
+            pointer-events: none;
+            transition: transform .32s cubic-bezier(.34,1.56,.64,1), opacity .28s ease;
+        }
+        .efc-chat.open {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* ── Header ── */
+        .efc-header {
+            flex-shrink: 0;
+            background: linear-gradient(135deg,var(--navy) 0%,var(--dark-3) 100%);
+            border-bottom: 1px solid rgba(201,168,76,.15);
+            padding: 14px 16px;
+            display: flex; align-items: center; gap: 12px;
+            position: relative;
+        }
+        .efc-header::before {
+            content:'';
+            position:absolute; top:0; left:0; right:0; height:2px;
+            background:linear-gradient(90deg,transparent,var(--gold),transparent);
+        }
+        .efc-avatar {
+            width: 40px; height: 40px; flex-shrink: 0;
+            background: linear-gradient(135deg,var(--gold),var(--gold-dark));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 0 14px var(--gold-glow);
+            position: relative;
+        }
+        .efc-avatar::after {
+            content:'';
+            position:absolute; bottom:1px; right:1px;
+            width:10px; height:10px;
+            background:var(--green);
+            border:2px solid var(--dark-2);
+            border-radius:50%;
+        }
+        .efc-header-info { flex:1; min-width:0; }
+        .efc-header-name {
+            font-size: 14px; font-weight: 700; color: var(--white);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .efc-header-status {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 11px; color: var(--green); font-weight: 500; margin-top:1px;
+        }
+        .efc-status-dot {
+            width:6px; height:6px; background:var(--green); border-radius:50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,.5)} 50%{box-shadow:0 0 0 5px rgba(76,175,80,0)} }
+        .efc-close-btn {
+            background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+            border-radius:7px; width:30px; height:30px; cursor:pointer;
+            color:var(--w70); font-size:16px; line-height:1;
+            display:flex; align-items:center; justify-content:center;
+            transition:all var(--transition); flex-shrink:0;
+        }
+        .efc-close-btn:hover { background:rgba(201,168,76,.12); border-color:rgba(201,168,76,.3); color:var(--gold); }
+
+        /* ── Messages area ── */
+        .efc-messages {
+            flex:1; overflow-y:auto; padding:16px 14px;
+            display:flex; flex-direction:column; gap:10px;
+            scroll-behavior:smooth;
+        }
+        .efc-messages::-webkit-scrollbar { width:4px; }
+        .efc-messages::-webkit-scrollbar-track { background:transparent; }
+        .efc-messages::-webkit-scrollbar-thumb { background:rgba(201,168,76,.25); border-radius:2px; }
+
+        /* Bubbles */
+        .msg { display:flex; gap:8px; animation:msgSlide .3s ease both; }
+        @keyframes msgSlide { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .msg.bot  { align-items:flex-end; }
+        .msg.user { justify-content:flex-end; }
+        .msg-av {
+            width:28px; height:28px; flex-shrink:0;
+            background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+            font-size:13px; align-self:flex-end;
+        }
+        .bubble {
+            max-width:82%; padding:10px 13px;
+            border-radius:14px; font-size:13px; line-height:1.55;
+            word-break:break-word;
+        }
+        .msg.bot  .bubble {
+            background:var(--dark-3);
+            border:1px solid rgba(255,255,255,.07);
+            border-bottom-left-radius:4px;
+            color:var(--w70);
+        }
+        .msg.user .bubble {
+            background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+            color:var(--black); font-weight:600;
+            border-bottom-right-radius:4px;
+        }
+        .bubble strong { color:var(--white); font-weight:700; }
+        .bubble .gold  { color:var(--gold); font-weight:700; }
+
+        /* Timestamp */
+        .msg-time {
+            font-size:9px; color:var(--w50); text-align:right;
+            margin-top:3px; padding:0 2px;
+        }
+        .msg.bot .msg-time { text-align:left; padding-left:36px; }
+
+        /* Typing indicator */
+        .typing-bubble {
+            background:var(--dark-3);
+            border:1px solid rgba(255,255,255,.07);
+            border-radius:14px; border-bottom-left-radius:4px;
+            padding:11px 16px;
+            display:flex; gap:5px; align-items:center;
+        }
+        .typing-dot {
+            width:7px; height:7px; background:rgba(201,168,76,.55);
+            border-radius:50%;
+        }
+        .typing-dot:nth-child(1){animation:typBounce .9s .0s ease-in-out infinite;}
+        .typing-dot:nth-child(2){animation:typBounce .9s .2s ease-in-out infinite;}
+        .typing-dot:nth-child(3){animation:typBounce .9s .4s ease-in-out infinite;}
+        @keyframes typBounce { 0%,100%{transform:translateY(0);opacity:.5} 50%{transform:translateY(-5px);opacity:1} }
+
+        /* Quick-reply chips */
+        .chips {
+            display:flex; flex-wrap:wrap; gap:7px;
+            padding:4px 0 2px;
+            animation:msgSlide .35s ease both;
+        }
+        .chip {
+            background:rgba(201,168,76,.09);
+            border:1px solid rgba(201,168,76,.28);
+            color:var(--gold); font-size:12px; font-weight:600;
+            padding:7px 13px; border-radius:50px;
+            cursor:pointer; transition:all var(--transition);
+            white-space:nowrap;
+        }
+        .chip:hover { background:rgba(201,168,76,.18); transform:translateY(-2px); box-shadow:0 4px 12px var(--gold-glow); }
+
+        /* Contact cards */
+        .contact-cards {
+            display:flex; flex-direction:column; gap:8px;
+            animation:msgSlide .4s ease both;
+        }
+        .contact-card {
+            display:flex; align-items:center; gap:12px;
+            padding:12px 14px;
+            background:var(--dark-3);
+            border:1px solid rgba(255,255,255,.07);
+            border-radius:var(--radius-sm);
+            cursor:pointer; transition:all var(--transition);
+            text-decoration:none;
+        }
+        .contact-card:hover { border-color:var(--gold-glow); background:rgba(201,168,76,.06); transform:translateX(4px); }
+        .contact-card-ico {
+            width:38px; height:38px; border-radius:9px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:19px; flex-shrink:0;
+        }
+        .ico-wa  { background:rgba(37,211,102,.12); border:1px solid rgba(37,211,102,.25); }
+        .ico-tg  { background:rgba(41,182,246,.12);  border:1px solid rgba(41,182,246,.25);  }
+        .ico-em  { background:rgba(201,168,76,.12);  border:1px solid rgba(201,168,76,.25);  }
+        .contact-card-body { flex:1; min-width:0; }
+        .contact-card-title { font-size:13px; font-weight:700; color:var(--white); margin-bottom:1px; }
+        .contact-card-sub   { font-size:11px; color:var(--w50); font-weight:400; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .contact-card-arrow { font-size:14px; color:var(--w50); flex-shrink:0; transition:transform var(--transition); }
+        .contact-card:hover .contact-card-arrow { transform:translateX(3px); color:var(--gold); }
+
+        /* Service tags */
+        .srv-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+        .srv-tag {
+            font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase;
+            padding:3px 9px; border-radius:50px;
+            background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.22); color:var(--gold);
+        }
+
+        /* ── Footer input bar ── */
+        .efc-footer {
+            flex-shrink:0;
+            padding:10px 12px;
+            background:var(--dark-3);
+            border-top:1px solid rgba(255,255,255,.06);
+            display:flex; gap:8px; align-items:center;
+        }
+        .efc-input {
+            flex:1;
+            background:var(--dark-2);
+            border:1px solid rgba(255,255,255,.1);
+            border-radius:50px;
+            padding:10px 16px;
+            color:var(--white); font-size:13px;
+            font-family:inherit; outline:none;
+            transition:border-color var(--transition);
+        }
+        .efc-input::placeholder { color:var(--w50); }
+        .efc-input:focus { border-color:rgba(201,168,76,.45); }
+        .efc-send {
+            width:38px; height:38px; flex-shrink:0;
+            background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+            border:none; border-radius:50%; cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            box-shadow:0 4px 12px var(--gold-glow);
+            transition:all var(--transition);
+        }
+        .efc-send:hover  { transform:scale(1.1); box-shadow:0 8px 20px var(--gold-glow); }
+        .efc-send:active { transform:scale(.95); }
+        .efc-send svg { width:16px; height:16px; fill:var(--black); }
+
+        /* Powered by */
+        .efc-powered {
+            text-align:center; font-size:9px; color:rgba(255,255,255,.18);
+            padding:5px 0 7px; letter-spacing:.5px; flex-shrink:0;
+        }
+        .efc-powered span { color:rgba(201,168,76,.4); }
+
+        /* ── Mobile ── */
+        @media(max-width:480px) {
+            .efc-chat {
+                right:0; left:0; bottom:0;
+                width:100%; max-height:92vh;
+                border-radius:var(--radius) var(--radius) 0 0;
+                transform: translateY(100%);
+            }
+            .efc-chat.open { transform:translateY(0); opacity:1; }
+            .efc-fab { bottom:16px; right:16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================================================================
+     FAB BUTTON
+================================================================ -->
+<div class="efc-fab">
+    <button class="efc-fab-btn" id="efcFab" onclick="toggleChat()" aria-label="Open support chat">
+        <!-- Chat icon -->
+        <svg id="fabIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.477 2 2 6.253 2 11.5c0 2.304.86 4.41 2.28 6.05L2.93 21.2a.75.75 0 0 0 .955.955l3.972-1.55A10.46 10.46 0 0 0 12 21c5.523 0 10-4.253 10-9.5S17.523 2 12 2Z"/>
+        </svg>
+        <span class="efc-badge" id="efcBadge">1</span>
+        <span class="efc-fab-tooltip">Chat with us</span>
+    </button>
+</div>
+
+<!-- ================================================================
+     CHAT WINDOW
+================================================================ -->
+<div class="efc-chat" id="efcChat" role="dialog" aria-label="Elite Forex Capital Support Chat">
+
+    <!-- Header -->
+    <div class="efc-header">
+        <div class="efc-avatar">⬡</div>
+        <div class="efc-header-info">
+            <div class="efc-header-name">Elite Forex Capital</div>
+            <div class="efc-header-status">
+                <div class="efc-status-dot"></div>
+                Support team online
+            </div>
+        </div>
+        <button class="efc-close-btn" onclick="toggleChat()" aria-label="Close chat">✕</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="efc-messages" id="efcMessages"></div>
+
+    <!-- Input -->
+    <div class="efc-footer">
+        <input
+            class="efc-input"
+            id="efcInput"
+            type="text"
+            placeholder="Type a message…"
+            maxlength="300"
+            autocomplete="off"
+            onkeydown="handleKey(event)"
+            aria-label="Type your message"
+        >
+        <button class="efc-send" onclick="sendUserMsg()" aria-label="Send message">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+    </div>
+    <div class="efc-powered">Powered by <span>Elite Forex Capital</span> Support</div>
+</div>
+
+<script>
+/* ================================================================
+   STATE
+================================================================ */
+let chatOpen    = false;
+let welcomed    = false;
+let botTyping   = false;
+let msgHistory  = [];
+
+/* ================================================================
+   TOGGLE
+================================================================ */
+function toggleChat() {
+    chatOpen = !chatOpen;
+    const win = document.getElementById('efcChat');
+    const fab = document.getElementById('efcFab');
+    const bdg = document.getElementById('efcBadge');
+
+    win.classList.toggle('open', chatOpen);
+    fab.classList.toggle('open', chatOpen);
+    if (chatOpen) {
+        if (bdg) bdg.remove();
+        if (!welcomed) { welcomed = true; runWelcomeFlow(); }
+        setTimeout(() => {
+            document.getElementById('efcInput').focus();
+        }, 340);
+    }
+}
+
+/* ================================================================
+   WELCOME FLOW
+================================================================ */
+async function runWelcomeFlow() {
+    await botSay(
+        `👋 Welcome to <strong>Elite Forex Capital</strong>.<br>
+         I'm your support assistant — here to guide you to the right team.`,
+        700
+    );
+    await botSay(
+        `We specialise in:<br>
+         <div class="srv-tags" style="margin-top:8px">
+           <span class="srv-tag">Account Management</span>
+           <span class="srv-tag">Challenge Passing</span>
+           <span class="srv-tag">Account Scaling</span>
+           <span class="srv-tag">Risk Strategies</span>
+         </div>`,
+        1100
+    );
+    await botSay(`How can we help you today? Choose an option below:`, 600);
+    showChips([
+        { label:'📋 Our Services',     key:'services'  },
+        { label:'🏆 Challenge Passing', key:'passing'   },
+        { label:'📈 Account Scaling',   key:'scaling'   },
+        { label:'💼 Account Management',key:'management'},
+        { label:'📞 Contact Support',   key:'contact'   },
+    ]);
+}
+
+/* ================================================================
+   BOT SAY  (adds bot bubble after typing delay)
+================================================================ */
+function botSay(html, delay = 800) {
+    return new Promise(resolve => {
+        showTyping();
+        setTimeout(() => {
+            removeTyping();
+            appendBotBubble(html);
+            resolve();
+        }, delay);
+    });
+}
+
+function appendBotBubble(html) {
+    const wrap = div('msg bot');
+    const av   = div('msg-av'); av.textContent = '⬡';
+    const col  = div(''); col.style.display='flex'; col.style.flexDirection='column'; col.style.gap='2px';
+    const bub  = div('bubble'); bub.innerHTML = html;
+    const tm   = div('msg-time'); tm.textContent = now();
+    col.append(bub, tm);
+    wrap.append(av, col);
+    msgs().append(wrap);
+    scrollBottom();
+}
+
+function appendUserBubble(text) {
+    const wrap = div('msg user');
+    const col  = div(''); col.style.display='flex'; col.style.flexDirection='column'; col.style.gap='2px'; col.style.alignItems='flex-end';
+    const bub  = div('bubble'); bub.textContent = text;
+    const tm   = div('msg-time'); tm.textContent = now();
+    col.append(bub, tm);
+    wrap.append(col);
+    msgs().append(wrap);
+    scrollBottom();
+}
+
+/* ================================================================
+   TYPING INDICATOR
+================================================================ */
+function showTyping() {
+    if (botTyping) return;
+    botTyping = true;
+    const wrap = div('msg bot'); wrap.id = 'efcTyping';
+    const av   = div('msg-av'); av.textContent = '⬡';
+    const bub  = div('typing-bubble');
+    for (let i=0;i<3;i++) bub.append(Object.assign(div('typing-dot'),{}));
+    wrap.append(av, bub);
+    msgs().append(wrap);
+    scrollBottom();
+}
+function removeTyping() {
+    botTyping = false;
+    const t = document.getElementById('efcTyping');
+    if (t) t.remove();
+}
+
+/* ================================================================
+   CHIPS
+================================================================ */
+function showChips(options) {
+    const row = div('chips');
+    options.forEach(o => {
+        const c = div('chip');
+        c.textContent = o.label;
+        c.onclick = () => { row.remove(); handleChip(o.key, o.label); };
+        row.append(c);
+    });
+    msgs().append(row);
+    scrollBottom();
+}
+
+/* ================================================================
+   CONTACT CARDS
+================================================================ */
+function showContactCards() {
+    const cards = [
+        { href:'https://wa.me/1234567890',                 cls:'ico-wa',  ico:'🟢', title:'Chat on WhatsApp',  sub:'Fastest response · available now'   },
+        { href:'https://t.me/EliteForexCapital',           cls:'ico-tg',  ico:'🔵', title:'Chat on Telegram',  sub:'@EliteForexCapital'                  },
+        { href:'mailto:info@eliteforex.capital',           cls:'ico-em',  ico:'⬡',  title:'Send an Email',     sub:'info@eliteforex.capital'             },
+    ];
+    const wrap = div('contact-cards');
+    cards.forEach(c => {
+        const a = document.createElement('a');
+        a.href   = c.href; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        a.className = 'contact-card';
+        a.innerHTML = `
+            <div class="contact-card-ico ${c.cls}">${c.ico}</div>
+            <div class="contact-card-body">
+                <div class="contact-card-title">${c.title}</div>
+                <div class="contact-card-sub">${c.sub}</div>
+            </div>
+            <div class="contact-card-arrow">›</div>
+        `;
+        wrap.append(a);
+    });
+    msgs().append(wrap);
+    scrollBottom();
+}
+
+/* ================================================================
+   CHIP HANDLER – knowledge base
+================================================================ */
+async function handleChip(key, label) {
+    appendUserBubble(label);
+
+    switch(key) {
+
+        case 'services':
+            await botSay(
+                `We offer <strong>four core services</strong>:<br><br>
+                 🎯 <strong>Challenge Passing</strong> — from $50K challenges<br>
+                 📈 <strong>Account Scaling</strong> — $100K+ funded accounts<br>
+                 💼 <strong>Account Management</strong> — full trade management<br>
+                 🛡️ <strong>Risk Strategies</strong> — disciplined, rules-based growth`
+            );
+            await botSay(`Which service interests you most?`, 600);
+            showChips([
+                { label:'🏆 Challenge Passing',  key:'passing'    },
+                { label:'📈 Account Scaling',    key:'scaling'    },
+                { label:'💼 Account Management', key:'management' },
+                { label:'📞 Speak to a Specialist', key:'contact' },
+            ]);
+            break;
+
+        case 'passing':
+            await botSay(
+                `<strong>Funded Account Challenge Passing</strong><br><br>
+                 Our professional traders manage your evaluation for you — fully respecting all prop firm rules.<br><br>
+                 ✅ Starting from <span class="gold">$50,000</span> challenges<br>
+                 ✅ Phase 1 & Phase 2 management<br>
+                 ✅ Strict drawdown & risk compliance<br>
+                 ✅ Rule-adherent execution only`
+            );
+            await botSay(`Ready to get started? Our team will confirm your challenge details and timeline.`, 700);
+            await botSay(`Choose how you'd like to reach us:`, 500);
+            showContactCards();
+            break;
+
+        case 'scaling':
+            await botSay(
+                `<strong>Funded Account Scaling</strong><br><br>
+                 Already funded? We scale your account with institutional discipline.<br><br>
+                 📊 <span class="gold">$50K, $100K and above</span><br>
+                 🛡️ Capital preservation as the primary goal<br>
+                 📅 Long-term, structured growth strategy<br>
+                 💸 Withdrawal planning & drawdown protection`
+            );
+            await botSay(`Speak to a specialist to discuss your funded account:`, 700);
+            showContactCards();
+            break;
+
+        case 'management':
+            await botSay(
+                `<strong>Private Account Management</strong><br><br>
+                 We manage your live trading account on your behalf.<br><br>
+                 💼 Professional trade execution & monitoring<br>
+                 📋 Transparent weekly performance reporting<br>
+                 🤝 Performance-based profit sharing model<br>
+                 🔒 Fully risk-managed at all times`
+            );
+            await botSay(`Contact our team to discuss your account size and profit-share terms:`, 700);
+            showContactCards();
+            break;
+
+        case 'contact':
+            await botSay(`Our team is available via the following channels. Choose the one that suits you:`, 600);
+            showContactCards();
+            await botSay(`We typically respond within <strong>a few minutes</strong> on WhatsApp & Telegram. 🕐`, 800);
+            break;
+
+        case 'faq_cost':
+            await botSay(`Our fees are <strong>performance-based</strong> — we earn when you earn. Specific terms are agreed before any service begins. Contact our team for full details.`, 900);
+            await botSay(`Speak directly with a specialist:`, 500);
+            showContactCards();
+            break;
+
+        case 'faq_safe':
+            await botSay(
+                `<strong>Capital protection is our #1 priority.</strong><br><br>
+                 🛡️ Maximum drawdown limits enforced<br>
+                 🛑 Stop loss on every single trade<br>
+                 📊 Daily risk exposure controls<br>
+                 ✅ Rules-based, consistent framework<br><br>
+                 We never risk more than agreed parameters.`
+            );
+            await botSay(`For full transparency, contact our team:`, 500);
+            showContactCards();
+            break;
+
+        default:
+            await botSay(`I'm here to help! Here's how you can reach our specialist team directly:`, 700);
+            showContactCards();
+    }
+}
+
+/* ================================================================
+   USER TEXT INPUT HANDLER
+================================================================ */
+function sendUserMsg() {
+    const inp = document.getElementById('efcInput');
+    const txt = inp.value.trim();
+    if (!txt) return;
+    inp.value = '';
+    appendUserBubble(txt);
+    processUserText(txt.toLowerCase());
+}
+function handleKey(e) { if (e.key==='Enter') sendUserMsg(); }
+
+async function processUserText(t) {
+    // keyword routing
+    if (match(t,['whatsapp','wa','wp']))             { await botSay(`You can reach us on WhatsApp right now 👇`, 600); showContactCards(); }
+    else if (match(t,['telegram','tg']))              { await botSay(`Connect with us on Telegram 👇`, 600); showContactCards(); }
+    else if (match(t,['email','mail','e-mail']))      { await botSay(`Send us an email anytime 👇`, 600); showContactCards(); }
+    else if (match(t,['pass','challeng','ftmo','prop','eval','phase','myfund','e8'])) { handleChip('passing','🏆 Challenge Passing'); }
+    else if (match(t,['scal','100k','50k','fund','grow']))  { handleChip('scaling','📈 Account Scaling'); }
+    else if (match(t,['manag','live account','trade for','account']))                { handleChip('management','💼 Account Management'); }
+    else if (match(t,['price','fee','cost','charge','how much','payment']))          { handleChip('faq_cost','💲 Pricing'); }
+    else if (match(t,['safe','secur','risk','drawdown','protect','trust']))          { handleChip('faq_safe','🛡️ Safety & Risk'); }
+    else if (match(t,['service','offer','what do','what you']))                      { handleChip('services','📋 Our Services'); }
+    else if (match(t,['hi','hello','hey','good','morning','evening','afternoon']))   {
+        await botSay(`Hello! 👋 Great to have you here.<br>How can I help you today?`, 700);
+        showChips([
+            { label:'📋 Our Services',       key:'services'   },
+            { label:'🏆 Challenge Passing',  key:'passing'    },
+            { label:'📈 Account Scaling',    key:'scaling'    },
+            { label:'💼 Account Management', key:'management' },
+            { label:'📞 Contact Support',    key:'contact'    },
+        ]);
+    }
+    else {
+        await botSay(
+            `Thanks for your message! 🙏<br><br>
+             For the most accurate answer, our specialist team is ready to assist you directly.`,
+            800
+        );
+        await botSay(`Choose your preferred contact method:`, 400);
+        showContactCards();
+    }
+}
+
+function match(t, keywords) { return keywords.some(k => t.includes(k)); }
+
+/* ================================================================
+   HELPERS
+================================================================ */
+function div(cls) { const d=document.createElement('div'); if(cls) d.className=cls; return d; }
+function msgs()   { return document.getElementById('efcMessages'); }
+function scrollBottom() {
+    const m = msgs();
+    requestAnimationFrame(() => { m.scrollTop = m.scrollHeight; });
+}
+function now() {
+    return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+}
+</script>
+</body>
+</html>
+                
 </body>
 </html>
