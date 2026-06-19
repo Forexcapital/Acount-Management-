@@ -1290,19 +1290,6 @@
 </footer>
 
 <script>
-// CURSOR
-const cursor = document.getElementById('cursor');
-const dot = document.getElementById('cursorDot');
-document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-    dot.style.left = e.clientX + 'px';
-    dot.style.top = e.clientY + 'px';
-});
-document.querySelectorAll('a,button,.srv-card,.stat-card,.tc,.why-feat,.analysis-card').forEach(el => {
-    el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1.8)'; cursor.style.background = 'rgba(201,168,76,0.1)'; });
-    el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; cursor.style.background = 'transparent'; });
-});
 
 // NAV SCROLL
 const navbar = document.getElementById('navbar');
