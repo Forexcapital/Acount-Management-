@@ -716,7 +716,335 @@
             </div>
         </div>
         <!-- DASHBOARD -->
-   
+  
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Preview — Layout V2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --bg: #0B0C0E;
+    --panel: #14161A;
+    --line: rgba(255,255,255,0.07);
+    --text: #E8E6E0;
+    --muted: rgba(255,255,255,0.45);
+    --green: #4ADE80;
+    --red: #F87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    padding: 60px 24px;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ============================================
+     NEW STRUCTURE:
+     Row 1 — three stat pills in a horizontal strip (no cards, just dividers)
+     Row 2 — one wide panel: chart on the left (60%), live trades stacked on the right (40%)
+     Metrics from before are now folded as small inline tags ON the stat strip,
+     not a separate row — removes a whole layer of nesting.
+     ============================================ */
+
+  .board {
+    width: 100%;
+    max-width: 920px;
+  }
+
+  /* ---- Row 1: stat strip ---- */
+  .stat-strip {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    margin-bottom: 4px;
+  }
+
+  .stat {
+    flex: 1;
+    padding: 22px 26px;
+    position: relative;
+  }
+
+  .stat:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0; top: 18%; bottom: 18%;
+    width: 1px;
+    background: var(--line);
+  }
+
+  .stat-lbl {
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .stat-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .stat-val .tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 5px;
+  }
+
+  .tag.up { color: var(--green); background: rgba(74,222,128,0.12); }
+  .tag.gold { color: var(--gold); background: rgba(201,168,76,0.12); }
+  .tag.safe { color: var(--muted); background: rgba(255,255,255,0.06); }
+
+  /* connecting joint between strip and panel */
+  .joint {
+    height: 28px;
+    width: 1px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, var(--line), transparent);
+  }
+
+  /* ---- Row 2: main panel, split 60/40 internally ---- */
+  .main-panel {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--panel);
+    overflow: hidden;
+  }
+
+  .chart-side {
+    padding: 28px 28px 22px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panel-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .panel-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.8s ease-out infinite;
+  }
+
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.55); }
+    70%  { box-shadow: 0 0 0 6px rgba(74,222,128,0); }
+    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+  }
+
+  .chart-wrap {
+    flex: 1;
+    min-height: 160px;
+  }
+
+  .chart-wrap svg { width: 100%; height: 100%; display: block; }
+
+  .chart-foot {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ---- Trades side ---- */
+  .trades-side {
+    padding: 28px 22px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .trades-side .panel-title { margin-bottom: 16px; }
+
+  .trade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+
+  .trow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.018);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  .trow:not(:last-child) { border-bottom: 1px solid var(--line); }
+
+  .tpair { color: var(--text); font-weight: 500; }
+
+  .tside {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  .tside.buy { color: var(--green); background: rgba(74,222,128,0.12); }
+  .tside.sell { color: var(--red); background: rgba(248,113,113,0.12); }
+
+  .tpnl { color: var(--green); font-weight: 600; }
+
+  .trades-foot {
+    margin-top: auto;
+    padding-top: 16px;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  @media (max-width: 760px) {
+    .stat-strip { flex-direction: column; }
+    .stat:not(:last-child)::after { display: none; }
+    .stat:not(:last-child) { border-bottom: 1px solid var(--line); }
+    .main-panel { grid-template-columns: 1fr; }
+    .chart-side { border-right: none; border-bottom: 1px solid var(--line); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .live-dot { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="board">
+
+  <!-- ROW 1: horizontal stat strip, no card chrome, just dividers -->
+  <div class="stat-strip">
+    <div class="stat">
+      <div class="stat-lbl">Capital Managed</div>
+      <div class="stat-val">$3.8M+</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Total PnL</div>
+      <div class="stat-val">+27.4% <span class="tag up">↑ Month</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Win Rate</div>
+      <div class="stat-val">85.1% <span class="tag gold">⬡ Avg</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Client Satisfaction</div>
+      <div class="stat-val">98.9%</div>
+    </div>
+  </div>
+
+  <div class="joint"></div>
+
+  <!-- ROW 2: asymmetric main panel — chart 60% / trades 40% -->
+  <div class="main-panel">
+    <div class="chart-side">
+      <div class="panel-hdr">
+        <div>
+          <div class="panel-title">Portfolio Overview</div>
+          <div class="panel-sub">30-day equity curve</div>
+        </div>
+        <div class="live-badge"><div class="live-dot"></div> Live</div>
+      </div>
+      <div class="chart-wrap">
+        <svg viewBox="0 0 400 140" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,110 L35,96 L70,86 L95,91 L125,73 L155,65 L185,53 L215,60 L245,42 L275,33 L305,38 L335,22 L365,16 L395,9 L400,8 L400,140 L0,140 Z" fill="url(#cg)"/>
+          <path d="M0,110 L35,96 L70,86 L95,91 L125,73 L155,65 L185,53 L215,60 L245,42 L275,33 L305,38 L335,22 L365,16 L395,9 L400,8" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="400" cy="8" r="5" fill="#C9A84C" opacity="0.85">
+            <animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.85;0.35;0.85" dur="2s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </div>
+      <div class="chart-foot">
+        <span>Drawdown: 2.8%</span>
+        <span>Max Risk/Trade: &lt;5%</span>
+      </div>
+    </div>
+
+    <div class="trades-side">
+      <div class="panel-title">Recent Executions</div>
+      <div class="trade-list">
+        <div class="trow">
+          <span class="tpair">EUR/USD</span>
+          <span class="tside buy">BUY</span>
+          <span class="tpnl">+$924</span>
+        </div>
+        <div class="trow">
+          <span class="tpair">XAU/USD</span>
+          <span class="tside buy">BUY</span>
+          <span class="tpnl">+$1,380</span>
+        </div>
+        <div class="trow">
+          <span class="tpair">GBP/JPY</span>
+          <span class="tside sell">SELL</span>
+          <span class="tpnl">+$672</span>
+        </div>
+      </div>
+      <div class="trades-foot">Updated in real time</div>
+    </div>
+  </div>
+
+</div>
+
+
 <!-- MARQUEE -->
 <div class="marquee-wrap">
     <div class="marquee-track">
