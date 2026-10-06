@@ -1,6 +1,11 @@
 <html lang="en">
 <head>
-
+<script>
+if (!location.search.includes('v=')) {
+  location.replace(location.pathname + '?v=' + Date.now() + location.hash);
+}
+</script>
+  
   <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
