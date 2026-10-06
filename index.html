@@ -1,4 +1,3 @@
-
 <html lang="en">
 <head>
 
@@ -252,6 +251,36 @@ body {
   var id = setInterval(tick, 1000);
   // resync immediately when tab/app returns from background (mobile throttles timers)
   document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
+})();
+</script>
+  <!-- Cache buster -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function () {
+  var v = Date.now();
+
+  // 1) Bust local CSS
+  document.querySelectorAll('link[rel="stylesheet"]').forEach(function (l) {
+    var h = l.getAttribute('href');
+    if (h && !/^(https?:)?\/\//.test(h)) l.href = h.split('?')[0] + '?v=' + v;
+  });
+
+  // 2) Bust local images
+  document.querySelectorAll('img').forEach(function (i) {
+    var s = i.getAttribute('src');
+    if (s && !/^(https?:)?\/\//.test(s) && !s.startsWith('data:')) i.src = s.split('?')[0] + '?v=' + v;
+  });
+
+  // 3) Auto-reload once if the page was updated on GitHub
+  fetch(location.href, { method: 'HEAD', cache: 'no-store' }).then(function (r) {
+    var lm = r.headers.get('last-modified') || r.headers.get('etag');
+    var k = 'pv_' + location.pathname;
+    var old = localStorage.getItem(k);
+    if (lm) localStorage.setItem(k, lm);
+    if (old && lm && old !== lm) location.reload(true);
+  }).catch(function () {});
 })();
 </script>
 </body>
